@@ -22,21 +22,29 @@ Docker Compose를 사용하여 OTU 전체 스택(Next.js + Supabase)을 셀프�
                  ┌────────┐  ┌──────────┐
                  │OTU App │  │   Kong   │
                  │Next.js │  │(API GW)  │
-                 └────┬───┘  └──┬───┬──┘
+                 └────┬───┘  └──┬───┬───┘
                       │         │   │
-                      │    ┌────┘   └────┐
-                      │    ▼             ▼
-                      │ ┌──────────┐ ┌──────────┐
-                      │ │  GoTrue  │ │PostgREST │
-                      │ │  (Auth)  │ │  (REST)  │
-                      │ └────┬─────┘ └────┬─────┘
-                      │      │             │
-                      └──────┼─────────────┘
-                             ▼
+                      │    ┌────┘   └─────┬──────────┐
+                      │    ▼              ▼          ▼
+                      │ ┌──────────┐ ┌──────────┐ ┌──────────┐
+                      │ │  GoTrue  │ │PostgREST │ │ Realtime │
+                      │ │  (Auth)  │ │  (REST)  │ │(WebSocket)│
+                      │ └────┬─────┘ └────┬─────┘ └────┬─────┘
+                      │      │             │             │
+                      │      └──────┬──────┘             │
+                      │             │    ┌───────────────┘
+                      └─────────────┼────┘
+                                    ▼
+                      ┌──────────────────────────┐
+                      │       PostgreSQL          │
+                      │    + pgvector + pgroonga   │
+                      └─────────────┬──────────────┘
+                                    │
+                              ┌─────┘
+                              ▼
                       ┌──────────────┐
-                      │  PostgreSQL  │
-                      │ + pgvector   │
-                      │ + pgroonga   │
+                      │   Storage    │
+                      │ (파일 저장소) │
                       └──────────────┘
 ```
 
@@ -62,7 +70,7 @@ Docker Compose를 사용하여 OTU 전체 스택(Next.js + Supabase)을 셀프�
 ## 빠른 시작 (로컬 테스트)
 
 ```bash
-git clone https://github.com/your-org/otu.oss.git
+git clone https://github.com/opentutorials-org/otu.oss.git
 cd otu.oss
 bash otu.sh install
 ```
@@ -118,7 +126,7 @@ docker compose version
 ### 3. 설치
 
 ```bash
-git clone https://github.com/your-org/otu.oss.git
+git clone https://github.com/opentutorials-org/otu.oss.git
 cd otu.oss
 bash otu.sh install
 ```
@@ -146,6 +154,25 @@ bash otu.sh status
 ```
 
 접속: `https://otu.hyoda.kr`
+
+---
+
+## 원클릭 설치 (사전 빌드 이미지)
+
+소스 빌드 없이 GHCR 사전 빌드 이미지를 사용하여 설치합니다. 서버에 소스 코드가 필요 없으며, 필요한 설정 파일만 자동으로 다운로드됩니다.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/opentutorials-org/otu.oss/main/install-remote.sh | bash
+```
+
+이 스크립트가 수행하는 작업:
+
+1. Docker + Docker Compose 설치 (없는 경우)
+2. 필요한 설정 파일 다운로드 (`docker-compose.prod.yml`, `otu.sh`, Caddy/Kong 설정 등)
+3. `otu.sh install` 실행 — 대화형으로 도메인, 보안 키, AI 설정 안내
+4. 서비스 시작
+
+설치 디렉토리는 기본값 `$HOME/otu`이며, `OTU_INSTALL_DIR` 환경변수로 변경 가능합니다.
 
 ---
 
@@ -193,14 +220,25 @@ docker compose --env-file docker/.env up -d --build
 
 ### 소셜 로그인
 
-| 변수                                        | 설명                 |
-| ------------------------------------------- | -------------------- |
-| `ENABLE_GITHUB_AUTH`                        | GitHub 로그인 활성화 |
-| `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` | GitHub OAuth 앱 정보 |
-| `ENABLE_GOOGLE_AUTH`                        | Google 로그인 활성화 |
-| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Google OAuth 정보    |
+| 변수                                        | 설명                                      |
+| ------------------------------------------- | ----------------------------------------- |
+| `NEXT_PUBLIC_ENABLE_SOCIAL_LOGIN`           | 소셜 로그인 버튼 UI 표시 (`true`/`false`) |
+| `ENABLE_GITHUB_AUTH`                        | GitHub 로그인 활성화                      |
+| `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` | GitHub OAuth 앱 정보                      |
+| `ENABLE_GOOGLE_AUTH`                        | Google 로그인 활성화                      |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Google OAuth 정보                         |
+| `ENABLE_APPLE_AUTH`                         | Apple 로그인 활성화                       |
+| `APPLE_CLIENT_ID` / `APPLE_CLIENT_SECRET`   | Apple OAuth 정보                          |
 
 OAuth Callback URL: `https://<API_DOMAIN>/auth/v1/callback`
+
+### 고급 설정
+
+| 변수                  | 설명                                         | 기본값    |
+| --------------------- | -------------------------------------------- | --------- |
+| `DB_EXTERNAL_PORT`    | 외부에서 PostgreSQL에 접근할 포트            | `54322`   |
+| `DISABLE_SIGNUP`      | 회원가입 비활성화                            | `false`   |
+| `ADDITIONAL_REDIRECT_URLS` | 추가 OAuth 리디렉션 URL (쉼표 구분)    | —         |
 
 ### 이메일 (SMTP)
 
