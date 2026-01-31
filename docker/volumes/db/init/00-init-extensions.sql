@@ -6,4 +6,10 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto" WITH SCHEMA extensions;
 CREATE EXTENSION IF NOT EXISTS "pgjwt" WITH SCHEMA extensions;
 CREATE EXTENSION IF NOT EXISTS "moddatetime" WITH SCHEMA extensions;
 CREATE EXTENSION IF NOT EXISTS "vector" WITH SCHEMA extensions;
-CREATE EXTENSION IF NOT EXISTS "pgroonga";
+
+-- pgroonga: 선택사항 (설치되지 않은 경우 무시)
+DO $$ BEGIN
+    CREATE EXTENSION IF NOT EXISTS "pgroonga";
+EXCEPTION WHEN OTHERS THEN
+    RAISE NOTICE 'pgroonga extension not available — skipping';
+END $$;
