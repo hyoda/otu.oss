@@ -1,7 +1,6 @@
 import React from 'react';
-import { NextIntlClientProvider } from 'next-intl';
-import { getLocale, getMessages } from 'next-intl/server';
 import { setI18n } from '@lingui/react/server';
+import { getUserLocale } from '@/i18n-server';
 import { renderLogger } from '@/debug/render';
 import { LinguiClientProvider } from '@/components/LinguiClientProvider';
 import { loadCatalog, i18n } from '@/lib/lingui';
@@ -78,11 +77,7 @@ export const viewport: Viewport = {
 };
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
     renderLogger('root/layout.tsx');
-    const locale = await getLocale();
-
-    // Providing all messages to the client
-    // side is the easiest way to get started
-    const messages = await getMessages();
+    const locale = await getUserLocale();
 
     // LinguiJS 초기화 - 컴파일된 카탈로그 로드
     const { messages: linguiMessages } = await import(`../src/locales/${locale}/messages.po`);
@@ -100,7 +95,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </head>
             <body>
                 <LinguiClientProvider initialLocale={locale} initialMessages={linguiMessages}>
-                    <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
+                    {children}
                 </LinguiClientProvider>
             </body>
         </html>
