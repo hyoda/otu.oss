@@ -340,7 +340,6 @@ npm run test -- --debug alarm app/api/reminder/renew-alarms/route.test.ts
 
 # E2E 테스트
 npm run test:e2e
-npm run test:e2e:cron
 
 # 미들웨어 통합 테스트 (개발 서버 실행 필수)
 npm run test:middleware
