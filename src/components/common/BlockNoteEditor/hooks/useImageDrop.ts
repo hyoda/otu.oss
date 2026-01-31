@@ -3,6 +3,7 @@ import { processFile } from '@/functions/uploadcare';
 import { editorViewLogger } from '@/debug/editor';
 import { useSetAtom } from 'jotai';
 import { openSnackbarState } from '@/lib/jotai';
+import { useLingui } from '@lingui/react/macro';
 
 interface UploadResult {
     url: string | null;
@@ -12,10 +13,10 @@ interface UploadResult {
 interface UseImageDropProps {
     editor: any;
     pageId: string;
-    t: (key: string) => string;
 }
 
-export const useImageDrop = ({ editor, pageId, t }: UseImageDropProps) => {
+export const useImageDrop = ({ editor, pageId }: UseImageDropProps) => {
+    const { t } = useLingui();
     const [isUploading, setIsUploading] = useState(false);
     const abortControllerRef = useRef<AbortController | null>(null);
     const openSnackbar = useSetAtom(openSnackbarState);
@@ -164,7 +165,7 @@ export const useImageDrop = ({ editor, pageId, t }: UseImageDropProps) => {
             });
 
             openSnackbar({
-                message: t('all-images-uploaded'),
+                message: t`모든 이미지 업로드 완료`,
                 autoHideDuration: 2000,
                 horizontal: 'left',
                 vertical: 'bottom',

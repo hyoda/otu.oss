@@ -12,7 +12,7 @@ import { agreementType } from '../home/logouted/AgreementForm';
 import { termsOfService } from '../home/logouted/docs/terms-of-service_2024_6_20';
 import { privacyPolicy } from '../home/logouted/docs/privacy-policy_2024_6_20';
 import { marketing } from '../home/logouted/docs/marketing_2024_6_20';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 import Logo from '@/public/icon/logo_otu';
 import Apple from '@mui/icons-material/Apple';
 import GitHub from '@mui/icons-material/GitHub';
@@ -59,8 +59,7 @@ export function Login() {
     const darkMode = useAtomValue(isDarkModeAtom);
     const openConfirm = useSetAtom(openConfirmState);
     const router = useRouter();
-    const t = useTranslations('login');
-    const rt = useTranslations();
+    const { t } = useLingui();
     const [loading, setLoading] = useState(false);
     const [appleLoading, setAppleLoading] = useState(false);
     const [googleLoading, setGoogleLoading] = useState(false);
@@ -110,14 +109,14 @@ export function Login() {
         const handleSignup = () => {
             if (!agreements.termsOfService.version || !agreements.privacyPolicy.version) {
                 openConfirm({
-                    message: t('please-agree-to-all-terms-and-conditions'),
+                    message: t`약관과 개인정보 수집 및 이용에 동의해 주세요.`,
                     onYes: () => {
                         acceptAgreements();
                         setTimeout(callback, 10);
                     },
-                    yesLabel: t('agree'),
+                    yesLabel: t`전체동의 후 가입`,
                     onNo: () => {},
-                    noLabel: t('close'),
+                    noLabel: t`닫기`,
                 });
             } else {
                 callback();
@@ -128,7 +127,7 @@ export function Login() {
             authLogger('clear storage before login');
             // 2,3번 인자는 로그인 시에는 서비스 워커와 캐쉬 스토리지를 삭제할 필요가 없기 때문에 false로 설정
             try {
-                await clearStorage(t('clear-storage-before-login'), false, false);
+                await clearStorage(t`로그인을 시작하기 전에 스토리지를 초기화`, false, false);
             } catch (error) {
                 console.error('Login error:', error);
             } finally {
@@ -171,9 +170,9 @@ export function Login() {
                 setGithubLoading(false);
                 console.error(`Github login failed: ${error.message}`);
                 openConfirm({
-                    message: `${t('login-failed')}`,
+                    message: t`로그인에 실패했습니다. 다시 시도해 주세요.`,
                     onYes: () => {},
-                    yesLabel: t('confirm'),
+                    yesLabel: t`확인`,
                 });
             }
         });
@@ -190,9 +189,9 @@ export function Login() {
         });
         if (isInAppBrowser()) {
             openConfirm({
-                message: t('google-login-is-not-supported'),
+                message: t`현재 앱에서는 구글 로그인 기능을 지원하지 않습니다. 브라우저나 다른 로그인 방법을 이용해 주세요.`,
                 onYes: acceptAgreements,
-                yesLabel: t('confirm'),
+                yesLabel: t`확인`,
             });
         } else {
             await commonJob(async () => {
@@ -208,9 +207,9 @@ export function Login() {
                     setGoogleLoading(false);
                     console.error(`Google login failed: ${error.message}`);
                     openConfirm({
-                        message: `${t('login-failed')}`,
+                        message: t`로그인에 실패했습니다. 다시 시도해 주세요.`,
                         onYes: () => {},
-                        yesLabel: t('confirm'),
+                        yesLabel: t`확인`,
                     });
                 }
             });
@@ -239,9 +238,9 @@ export function Login() {
                 setAppleLoading(false);
                 console.error(`Apple login failed: ${error.message}`);
                 openConfirm({
-                    message: `${t('login-failed')}`,
+                    message: t`로그인에 실패했습니다. 다시 시도해 주세요.`,
                     onYes: () => {},
-                    yesLabel: t('confirm'),
+                    yesLabel: t`확인`,
                 });
             }
         });
@@ -310,9 +309,9 @@ export function Login() {
         if (error) {
             authLogger('이메일 로그인 실패', { email, error });
             openConfirm({
-                message: `${t('login-failed')}: ${error.message}`,
+                message: t`로그인에 실패했습니다. 다시 시도해 주세요.` + `: ${error.message}`,
                 onYes: () => {},
-                yesLabel: t('confirm'),
+                yesLabel: t`확인`,
             });
         } else {
             document.cookie = `${SESSION_USER_ID_FOR_CHECK_SYNC}=${data.user.id}; expires=Fri, 31 Dec 9999 23:59:59 GMT`;
@@ -332,9 +331,9 @@ export function Login() {
     const getLabel = () => {
         if (loading) return <LoadingIcon />;
         if (pathname === '/signup') {
-            return t('login-or-signup');
+            return t`로그인 또는 회원가입`;
         } else if (pathname === '/signin') {
-            return t('login-or-signup');
+            return t`로그인 또는 회원가입`;
         }
         return '';
     };
@@ -349,7 +348,7 @@ export function Login() {
 
                 <div className="max-w-[348px] w-full">
                     <button onClick={handleBackClick} className="text-[15px] text-color float-left">
-                        {rt('navigation.back')}
+                        {t`뒤로`}
                     </button>
                     <div className="flex justify-center items-center w-full min-h-[89px]">
                         <Logo className="fill-text-color" width="80" height="39"></Logo>
@@ -384,7 +383,7 @@ export function Login() {
                             }}
                             loading={emailFormLoading}
                         >
-                            {rt('common.signup')}
+                            {t`회원가입`}
                         </Btn>
                         <Btn
                             onClick={(event) => {
@@ -393,7 +392,7 @@ export function Login() {
                             }}
                             loading={emailFormLoading}
                         >
-                            {rt('navigation.login')}
+                            {t`로그인`}
                         </Btn>
                     </div>
                 </div>
@@ -402,7 +401,7 @@ export function Login() {
                 {process.env.NEXT_PUBLIC_ENABLE_SOCIAL_LOGIN === 'true' && (
                     <>
                         {/* 구분선 */}
-                        <div className="text-[13px] opacity-50 mt-4">{t('or')}</div>
+                        <div className="text-[13px] opacity-50 mt-4">{t`또는`}</div>
 
                         <Btn
                             onClick={(event) => {
@@ -412,7 +411,7 @@ export function Login() {
                             }}
                             loading={appleLoading}
                         >
-                            <Apple className="w-[18px]" /> {t('login-with-apple')}
+                            <Apple className="w-[18px]" /> {t`Apple로 로그인`}
                         </Btn>
                         <Btn
                             onClick={(event) => {
@@ -422,7 +421,7 @@ export function Login() {
                             }}
                             loading={googleLoading}
                         >
-                            <Google className="w-[17px] mr-1" /> {t('login-with-google')}
+                            <Google className="w-[17px] mr-1" /> {t`Google로 로그인`}
                         </Btn>
                         <Btn
                             onClick={(event) => {
@@ -432,18 +431,16 @@ export function Login() {
                             }}
                             loading={githubLoading}
                         >
-                            <GitHub className="w-[17px] mr-1" /> {t('login-with-github')}
+                            <GitHub className="w-[17px] mr-1" /> {t`Github로 로그인`}
                         </Btn>
                     </>
                 )}
                 <div className="text-[13px] opacity-50 mt-3">
-                    {t.rich('by-signing-up-or-logging-in-terms-of-service-are-considered-agreed', {
-                        'terms-of-service': (chunk) => (
-                            <Link href="/consent#terms-of-service" className="underline">
-                                {chunk}
-                            </Link>
-                        ),
-                    })}
+                    {t`회원가입/로그인을 하면`}{' '}
+                    <Link href="/consent#terms-of-service" className="underline">
+                        {t`서비스 이용 약관`}
+                    </Link>
+                    {t`에 동의 한 것으로 간주합니다.`}
                 </div>
                 <ConfirmDialog />
             </div>

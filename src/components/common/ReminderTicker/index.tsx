@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 import { BellIcon } from '@heroicons/react/24/outline';
 
 export interface ReminderTickerData {
@@ -24,7 +24,7 @@ export default function ReminderTicker({
     onReminderClick,
     intervalMs = 2500,
 }: ReminderTickerProps) {
-    const t = useTranslations('reminder');
+    const { t } = useLingui();
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
 
@@ -56,7 +56,7 @@ export default function ReminderTicker({
 
     const currentReminder = hasReminders ? reminders[currentIndex] : null;
     const displayText = currentReminder
-        ? currentReminder.page_title || currentReminder.page_body || t('untitled') || '제목 없음'
+        ? currentReminder.page_title || currentReminder.page_body || t`제목 없음`
         : '';
 
     return (

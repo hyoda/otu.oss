@@ -4,7 +4,7 @@ import { ReactNode } from 'react';
 import Logo from '@/public/icon/logo_otu';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 
 export default function Layout({ children }: { children: ReactNode }) {
     return (
@@ -31,7 +31,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 }
 
 function Header() {
-    const t = useTranslations();
+    const { t } = useLingui();
     const pathname = usePathname();
 
     const handleBackClick = () => {
@@ -54,7 +54,7 @@ function Header() {
                 <div>
                     {typeof window !== 'undefined' && !location.href.includes('/welcome') && (
                         <button onClick={handleBackClick} className="text-[15px]">
-                            {t('navigation.back')}
+                            {t`뒤로`}
                         </button>
                     )}
                 </div>
@@ -72,20 +72,18 @@ function Header() {
 }
 
 function Footer() {
-    const t = useTranslations();
+    const { t } = useLingui();
 
     return (
         <>
             <div className="text-[13px]">
-                <div>{t('home.footer.organization')}</div>
-                <div>{t('home.footer.org-number')}</div>
-                <div>{t('home.footer.address')}</div>
+                <div>{t`비영리단체 오픈튜토리얼스`}</div>
+                <div>{t`단체 고유번호 619-82-61277`}</div>
+                <div>{t`경기도 의정부시 새롬안길 105`}</div>
                 <div className="text-white">
-                    <Link href="/consent#terms-of-service">
-                        {t('agreement-form.terms-of-service')}
-                    </Link>
+                    <Link href="/consent#terms-of-service">{t`약관`}</Link>
                     <span> | </span>
-                    <Link href="/consent#privacy-policy">{t('agreement-form.privacy-policy')}</Link>
+                    <Link href="/consent#privacy-policy">{t`개인정보 수집 및 이용`}</Link>
                 </div>
             </div>
         </>

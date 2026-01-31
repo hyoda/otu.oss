@@ -15,10 +15,10 @@ import { useAtom, useSetAtom } from 'jotai';
 import { sleep } from 'openai/core';
 import { useCallback, useRef, useEffect } from 'react';
 import { ulid } from 'ulid';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 
 export function useChatProcess() {
-    const t = useTranslations('chat');
+    const { t } = useLingui();
     const planRef = useRef<PlanItem[]>([]);
     const abortControllerRef = useRef<AbortController | null>(null);
     const [chatSession, setChatSession] = useAtom(chatSessionState);
@@ -154,7 +154,7 @@ export function useChatProcess() {
         const message = {
             id: ulid(),
             type: MessageType.Request,
-            name: t('me'),
+            name: t`나`,
             content: data.message,
         };
         setChatSession((draft) => {
@@ -171,7 +171,7 @@ export function useChatProcess() {
                     id: ulid(),
                     type: MessageType.SimilarityResponseStart,
                     name: 'OTU',
-                    content: t('similarity.searching'),
+                    content: t`질문과 관련된 자료를 찾고 있어요.`,
                 });
             });
             const result = await getSimilarity(data.query);

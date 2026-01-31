@@ -5,11 +5,11 @@ import { readViewLogger } from '@/debug/read';
 import { editorAutoSaveLogger } from '@/debug/editor';
 import Link from 'next/link';
 import React, { memo, useState, useCallback, useMemo, useEffect } from 'react';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 import { isMobile } from '@/functions/isMobile';
 import { useNavigate } from 'react-router-dom';
 
-function extractFirstH1OrSentence(htmlStr: string, t: (key: string) => string) {
+function extractFirstH1OrSentence(htmlStr: string, t: (key: string) => any) {
     // Creating a new DOM parser
     var parser = new DOMParser();
     // Parsing the HTML string
@@ -32,7 +32,7 @@ const RelatedItem = memo(function RelatedItem({ document }: { document: any }) {
     const navigate = useNavigate();
     const [active, setActive] = useState(false);
     const isModified = useAtomValue(isModifiedState);
-    const t = useTranslations('read');
+    const { t } = useLingui();
     const [isDesktop, setIsDesktop] = useState(false);
 
     useEffect(function checkDesktopEnvironment() {
@@ -41,14 +41,13 @@ const RelatedItem = memo(function RelatedItem({ document }: { document: any }) {
     }, []);
 
     // 번역 텍스트를 메모이제이션
+    const similarityValue = (Number(document.similarity) * 100).toFixed(2);
     const translations = useMemo(
         () => ({
-            relatedSimilarity: t('related-similarity', {
-                similarity: (Number(document.similarity) * 100).toFixed(2),
-            }),
-            noContentFound: t('no-content-found'),
+            relatedSimilarity: t`관련성 : ${similarityValue}%`,
+            noContentFound: t`콘텐츠를 찾을 수 없습니다`,
         }),
-        [t, document.similarity]
+        [t, similarityValue]
     );
 
     // 제목 추출을 메모이제이션

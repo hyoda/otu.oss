@@ -25,7 +25,7 @@ import {
     openSnackbarState,
     refreshListState,
 } from '@/lib/jotai';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 import { useRefreshFolders } from '@/hooks/useFoldersData';
 import {
     IconButton,
@@ -46,8 +46,7 @@ export function FolderDetailPageList() {
     const [currentPage, setCurrentPage] = useAtom(currentPageState);
     const { goBack } = useNavigation();
     const [folder, setFolder] = useState<any>(null);
-    const t = useTranslations('folder');
-    const tCommon = useTranslations();
+    const { t } = useLingui();
     const refreshList = useSetAtom(refreshListState);
     const openConfirm = useSetAtom(openConfirmState);
     const openSnackbar = useSetAtom(openSnackbarState);
@@ -237,11 +236,9 @@ export function FolderDetailPageList() {
         if (!folder || isDeletingFolder) return;
 
         openConfirm({
-            message:
-                t('confirm-delete') ||
-                '정말 이 폴더를 삭제하시겠습니까?\n\n폴더가 삭제되면 폴더 안의 페이지들은 폴더 없음 상태로 변경됩니다.',
-            yesLabel: t('delete') || '삭제',
-            noLabel: t('cancel') || '취소',
+            message: t`정말 이 폴더를 삭제하시겠습니까?\n\n폴더가 삭제되면 폴더 안의 페이지들은 폴더 없음 상태로 변경됩니다.`,
+            yesLabel: t`삭제`,
+            noLabel: t`취소`,
             onYes: async () => {
                 try {
                     folderLogger('폴더 삭제 시작', { folderId: folder.id });
@@ -251,7 +248,7 @@ export function FolderDetailPageList() {
                     await deleteFolder(folder.id);
 
                     openSnackbar({
-                        message: t('folder-deleted') || '폴더가 삭제되었습니다.',
+                        message: t`폴더가 삭제되었습니다.`,
                         severity: 'success',
                     });
 
@@ -266,7 +263,7 @@ export function FolderDetailPageList() {
                     folderLogger('폴더 삭제 완료', { folderId: folder.id });
                 } catch (error) {
                     openSnackbar({
-                        message: t('delete-failed') || '폴더 삭제에 실패했습니다.',
+                        message: t`폴더 삭제에 실패했습니다.`,
                         severity: 'error',
                     });
                     folderLogger('폴더 삭제 실패', { folderId: folder?.id, error });
@@ -357,18 +354,14 @@ export function FolderDetailPageList() {
                                     onClick={handleSaveFolder}
                                     disabled={isSavingFolder || !(editFolderName || '').trim()}
                                 >
-                                    {isSavingFolder ? (
-                                        <CircularProgress size={16} />
-                                    ) : (
-                                        tCommon('common.apply') || '적용'
-                                    )}
+                                    {isSavingFolder ? <CircularProgress size={16} /> : t`적용`}
                                 </Button>
                                 <Button
                                     size="small"
                                     onClick={handleCancelEditFolder}
                                     disabled={isSavingFolder}
                                 >
-                                    {tCommon('common.cancel') || '취소'}
+                                    {t`취소`}
                                 </Button>
                             </>
                         ) : (
@@ -378,7 +371,7 @@ export function FolderDetailPageList() {
                                     className="text-gray-600"
                                     onClick={handleMenuOpen}
                                     disabled={!folder}
-                                    title={t('folder-actions') || '폴더 관리'}
+                                    title={t`폴더 관리`}
                                 >
                                     <EllipsisHorizontalCircleIcon className="w-5 h-5" />
                                 </IconButton>
@@ -403,11 +396,11 @@ export function FolderDetailPageList() {
                                 >
                                     <MenuItem onClick={() => handleMenuAction('edit')}>
                                         <PencilSquareIcon className="w-4 h-4 mr-2" />
-                                        {t('edit-folder-name') || '폴더명 수정'}
+                                        {t`폴더명 수정`}
                                     </MenuItem>
                                     <MenuItem onClick={() => handleMenuAction('delete')}>
                                         <TrashIcon className="w-4 h-4 mr-2" />
-                                        {t('delete-folder') || '폴더 삭제'}
+                                        {t`폴더 삭제`}
                                     </MenuItem>
                                 </Menu>
                             </>

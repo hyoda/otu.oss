@@ -3,7 +3,7 @@ import TableRow from './TableRow';
 import { selectedItemsState, selectionModeState, toggleItemSelection } from '@/lib/jotai';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import AddIcon from '@mui/icons-material/Add';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 
 type ContentListProps = {
     contents:
@@ -36,8 +36,7 @@ export default function List({
     const [selectedItems, setSelectedItems] = useAtom(selectedItemsState);
     const [selectionMode, setSelectionMode] = useAtom(selectionModeState);
     const toggleSelection = useSetAtom(toggleItemSelection);
-    const t = useTranslations('common');
-    const tFolder = useTranslations('folder');
+    const { t } = useLingui();
 
     if (!contents) {
         return null;

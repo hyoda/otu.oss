@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import { useSetAtom } from 'jotai/index';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 function getCurDatetime() {
     const now = new Date();
 
@@ -20,14 +20,14 @@ function getCurDatetime() {
 
 export default function AsyncCSV() {
     const openConfirm = useSetAtom(openConfirmState);
-    const t = useTranslations('setting');
+    const { t } = useLingui();
 
     async function downloadCSV() {
         openConfirm({
-            message: t('confirm-download-json'),
+            message: t`JSON 파일을 다운로드하시겠습니까?`,
             onNo: () => {},
-            noLabel: t('cancel'),
-            yesLabel: t('download'),
+            noLabel: t`취소`,
+            yesLabel: t`다운로드`,
             onYes: async () => {
                 try {
                     const res = await fetch('/api/setting/export');
@@ -36,9 +36,9 @@ export default function AsyncCSV() {
                     if (data.message === 'success') {
                         if (data.data.length === 0) {
                             openConfirm({
-                                message: t('no-data-to-download'),
+                                message: t`다운로드할 데이터가 없습니다.`,
                                 onYes: () => {},
-                                yesLabel: t('confirm'),
+                                yesLabel: t`확인`,
                             });
                             return;
                         }
@@ -57,16 +57,16 @@ export default function AsyncCSV() {
                         });
                     } else {
                         openConfirm({
-                            message: t('failed-to-fetch-data'),
+                            message: t`데이터를 가져오는 데 실패했습니다.`,
                             onYes: () => {},
-                            yesLabel: t('confirm'),
+                            yesLabel: t`확인`,
                         });
                     }
                 } catch (e: any) {
                     openConfirm({
-                        message: t('critical-error-contact-admin'),
+                        message: t`치명적 오류입니다. 관리자에게 문의하십시오.`,
                         onYes: () => {},
-                        yesLabel: t('confirm'),
+                        yesLabel: t`확인`,
                     });
                 }
             },
@@ -75,7 +75,7 @@ export default function AsyncCSV() {
 
     return (
         <Button variant="contained" onClick={downloadCSV} color="primary">
-            {t('download')}
+            {t`다운로드`}
         </Button>
     );
 }

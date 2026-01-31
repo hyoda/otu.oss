@@ -3,7 +3,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 import s from './docDialog.module.css';
 
 export function DocsDialog({
@@ -17,7 +17,7 @@ export function DocsDialog({
     open: boolean;
     onClose: () => void;
 }) {
-    const t = useTranslations('docs-dialog');
+    const { t } = useLingui();
 
     return (
         <Dialog open={open} onClose={onClose} className={s.root}>
@@ -25,7 +25,7 @@ export function DocsDialog({
             <DialogContent dangerouslySetInnerHTML={{ __html: body }}></DialogContent>
             <DialogActions>
                 <Button variant="contained" onClick={onClose} color="secondary">
-                    {t('close')}
+                    {t`닫기`}
                 </Button>
             </DialogActions>
         </Dialog>

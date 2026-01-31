@@ -25,7 +25,7 @@ import Photo from '@/public/icon/bottom_nav_photo';
 import Ai from '@/public/icon/bottom_nav_ai';
 import { NavButton, NavButtonLabel } from '../NavButton';
 import { requestHapticFeedback } from '@/utils/hapticFeedback';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 
 // RRD 리팩토링: legacy navigation 유틸 제거
 import { useNavigate, useLocation, matchPath } from 'react-router-dom';
@@ -48,7 +48,7 @@ const AiIcon = (
 );
 
 const MainNavigation = memo(function MainNavigation() {
-    const t = useTranslations();
+    const { t } = useLingui();
     const darkMode = useAtomValue(isDarkModeAtom);
     const [searchDialog, setSearchDialog] = useAtom(searchDialogState);
     const resetSearch = useSetAtom(resetSearchState);
@@ -81,11 +81,9 @@ const MainNavigation = memo(function MainNavigation() {
             if (latestIsModified) {
                 navBottomLogger('변경사항 있음, 확인 필요');
                 openConfirm({
-                    message: t.markup('editor.unsaved-changes-warning', {
-                        br: () => '<br />',
-                    }),
-                    yesLabel: t('editor.exit'),
-                    noLabel: t('editor.cancel'),
+                    message: t`저장되지 않은 변경사항이 있습니다. 지금 나가면 변경사항이 사라집니다.`,
+                    yesLabel: t`나가기`,
+                    noLabel: t`취소`,
                     onYes: () => {
                         setIsModified(false);
                         navBottomLogger('변경사항 무시하고 나가기, isModified false로 설정');
@@ -189,14 +187,14 @@ const MainNavigation = memo(function MainNavigation() {
     // 번역 텍스트들을 메모이제이션
     const translations = useMemo(
         () => ({
-            home: t('navigation.home'),
-            search: t('navigation.search'),
-            write: t('navigation.write'),
-            images: t('editor.images'),
-            chat: t('navigation.chat'),
-            cancel: t('editor.cancel'),
-            login: t('loggedin-menu.login'),
-            uploadWarning: t('chat.upload-anonymous-user-warning'),
+            home: t`홈`,
+            search: t`검색`,
+            write: t`글쓰기`,
+            images: t`이미지`,
+            chat: t`채팅`,
+            cancel: t`취소`,
+            login: t`로그인`,
+            uploadWarning: t`익명 사용자는 파일 업로드 기능을 이용할 수 없습니다. 로그인 버튼을 누르면 지금까지 작성한 내용을 로그인 한 계정으로 이전 시켜드립니다.`,
         }),
         [t]
     );

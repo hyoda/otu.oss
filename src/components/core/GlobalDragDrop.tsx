@@ -5,7 +5,7 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { currentPageState, openSnackbarState, runSyncState } from '@/lib/jotai';
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 import { useCreate } from '../home/logined/page/CreateUpdate/useCreate';
 import { processFile, fetchCaption, generatePageId, getUserId } from '@/functions/uploadcare';
 import DOMPurify from 'dompurify';
@@ -14,7 +14,7 @@ import UploadIcon from '@mui/icons-material/Upload';
 import Loading from '@/public/icon/loading';
 
 export default function GlobalDragDrop() {
-    const t = useTranslations();
+    const { t } = useLingui();
     const [currentPage, setCurrentPage] = useAtom(currentPageState);
     const [isUploading, setIsUploading] = useState(false);
     const [isDragging, setIsDragging] = useState(false); // 드래그 상태 추적
@@ -62,7 +62,7 @@ export default function GlobalDragDrop() {
             // 붙여넣기된 내용은 전체가 본문으로 처리
             let bodyPart = content;
             // 임시 제목 설정
-            let titlePart = t('uploader.untitled');
+            let titlePart = t`제목 없음`;
 
             // 이미지가 포함되어 있는지 확인
             const hasImage = content.includes('<img');
@@ -114,7 +114,7 @@ export default function GlobalDragDrop() {
 
                 let fileStr = '';
                 let pageId = generatePageId();
-                let titlePart = t('uploader.untitled'); // 기본 제목
+                let titlePart = t`제목 없음`; // 기본 제목
 
                 // 파일 처리 시작
                 const filePromises = [];
@@ -146,7 +146,7 @@ export default function GlobalDragDrop() {
                                 }
                                 console.error('파일 업로드 오류:', error);
                                 openSnackbar({
-                                    message: t('uploader.file-upload-failed'),
+                                    message: t`파일 업로드에 실패했습니다.`,
                                 });
                                 return null;
                             });
@@ -196,7 +196,7 @@ export default function GlobalDragDrop() {
                 // 페이지 생성 로직
                 const pageId = generatePageId();
                 let content = '';
-                let titlePart = t('uploader.untitled'); // 기본 제목
+                let titlePart = t`제목 없음`; // 기본 제목
 
                 // 텍스트에서 첫 줄이나 문장을 제목으로 사용
                 if (plainText && plainText.trim().length > 0) {
@@ -376,7 +376,7 @@ export default function GlobalDragDrop() {
                         }
                         console.error('파일 업로드 오류:', error);
                         openSnackbar({
-                            message: t('uploader.file-upload-failed'),
+                            message: t`파일 업로드에 실패했습니다.`,
                         });
                         return null;
                     });

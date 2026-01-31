@@ -6,7 +6,7 @@ import { termsOfService } from './docs/ko/terms-of-service_2024_6_20';
 import { privacyPolicy } from './docs/ko/privacy-policy_2024_6_20';
 import { marketing } from './docs/ko/marketing_2024_6_20';
 import { docs } from './docs/docs';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 
 export type agreementType = {
     termsOfService: { version: string | null };
@@ -18,7 +18,7 @@ type AgreementFormProps = {
     agreements: agreementType;
 };
 export const AgreementForm = ({ onChange, agreements }: AgreementFormProps) => {
-    const t = useTranslations('agreement-form');
+    const { t } = useLingui();
     const [docInfo, setDocInfo] = useState<docs & { open: boolean }>({
         open: false,
         title: '',
@@ -72,9 +72,9 @@ export const AgreementForm = ({ onChange, agreements }: AgreementFormProps) => {
                             });
                         }}
                     >
-                        {t('terms-of-service')}
+                        {t`약관`}
                     </a>{' '}
-                    {t('required')}
+                    {t`동의 (필수)`}
                 </label>
             </div>
             <div className="mt-1">
@@ -99,9 +99,9 @@ export const AgreementForm = ({ onChange, agreements }: AgreementFormProps) => {
                             });
                         }}
                     >
-                        {t('privacy-policy')}
+                        {t`개인정보 수집 및 이용`}
                     </a>{' '}
-                    {t('required')}
+                    {t`동의 (필수)`}
                 </label>
             </div>
             <div className="mt-1">
@@ -125,13 +125,13 @@ export const AgreementForm = ({ onChange, agreements }: AgreementFormProps) => {
                             });
                         }}
                     >
-                        {t('marketing-consent')}
+                        {t`마케팅 수신`}
                     </a>{' '}
-                    {t('optional')}
+                    {t`동의 (옵션)`}
                 </label>
             </div>
             <div className="absolute z-1000 text-white top-[-25px] text-[8pt]">
-                {t('implicit-consent-notice')}
+                {t`기능을 사용하면, 이용약관과 개인정보 보호 정책에 동의한 것으로 간주합니다.`}
             </div>
             <DocsDialog
                 title={docInfo.title}

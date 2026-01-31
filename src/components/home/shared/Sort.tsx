@@ -4,12 +4,12 @@ import { SelectBox } from '@/components/common/selectBox';
 import { useAtom } from 'jotai';
 import { searchMethodState } from '@/lib/jotai';
 import { useCallback } from 'react';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 import { requestHapticFeedback } from '@/utils/hapticFeedback';
 import { sortLogger } from '@/debug/sort';
 
 export default function Sort() {
-    const t = useTranslations('content-list');
+    const { t } = useLingui();
     const [searchMethod, setSearchMethod] = useAtom(searchMethodState);
 
     sortLogger('SortControl 렌더링', {
@@ -46,10 +46,10 @@ export default function Sort() {
             // @ts-ignore
             onChange={handleSortChange}
             data={[
-                { label: t('sort-by-latest'), value: 'desc' },
-                { label: t('sort-by-oldest'), value: 'asc' },
+                { label: t`최신 순`, value: 'desc' },
+                { label: t`오래된 순`, value: 'asc' },
             ]}
-            title={t('sort')}
+            title={t`정렬`}
             // @ts-ignore
             value={searchMethod.sortCriteria}
         />

@@ -2,7 +2,7 @@ import React from 'react';
 import BellIcon from '@/public/icon/BellIcon';
 import BellSlashIcon from '@/public/icon/BellSlashIcon';
 import { ButtonBase, ButtonBaseProps } from './ButtonBase';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 
 export interface ReminderButtonProps extends Omit<ButtonBaseProps, 'icon' | 'label' | 'title'> {
     isActive: boolean;
@@ -23,13 +23,13 @@ export const ReminderButton: React.FC<ReminderButtonProps> = ({
     offLabel,
     label,
 }) => {
-    const t = useTranslations('editor');
+    const { t } = useLingui();
 
     return (
         <ButtonBase
             icon={isActive ? <BellSlashIcon /> : <BellIcon />}
-            label={isActive ? onLabel || t('reminder-off') : offLabel || t('reminder-on')}
-            title={label || t('reminder')}
+            label={isActive ? onLabel || t`리마인더 끄기` : offLabel || t`리마인더 시작`}
+            title={label || t`리마인더`}
             onClick={onClick}
             disabled={disabled}
             hideTextOnMobile={hideTextOnMobile}

@@ -13,7 +13,7 @@ import Image from 'next/image';
 import { createClient } from '@/supabase/utils/client';
 import { User } from '@supabase/supabase-js';
 import Logo from '@/public/icon/logo_otu';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 import LoadingIcon from '@/public/icon/loading';
 import Avatar from '@mui/material/Avatar';
 import React from 'react';
@@ -187,7 +187,7 @@ interface TopProps {
 }
 
 export const Top = React.memo(({ menu = true }: TopProps) => {
-    const t = useTranslations();
+    const { t } = useLingui();
     const [user, setUser] = useState<User | undefined>(undefined);
     const [userInfo, setUserInfo] = useImmer<any>(null);
     const profileUpdate = useAtomValue(profileUpdateState);
@@ -278,7 +278,7 @@ export const Top = React.memo(({ menu = true }: TopProps) => {
                 >
                     {/* 항상 Logo만 표시 */}
                     <a
-                        title={t('navigation.home')}
+                        title={t`홈`}
                         href="/home/page"
                         className="no-underline font-bold text-2xl pl-[11px]"
                     >

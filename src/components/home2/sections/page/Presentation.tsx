@@ -5,7 +5,7 @@ import { useAtom } from 'jotai';
 import List from '@/components/home/logined/DisplayType/List';
 import Grid from '@/components/home/logined/DisplayType/Grid';
 import { enhancedRenderLogger } from '@/debug/render';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 import { useCallback, useEffect, useState, useMemo } from 'react';
 import { useAlarmsStatus } from '@/hooks/useAlarmsStatus';
 import { useCustomInfiniteScroll } from '@/hooks/useCustomInfiniteScroll';
@@ -39,7 +39,7 @@ export default function Presentation({
 }: PresentationProps) {
     const [displayMode] = useAtom(displayModeState);
     const [searchMethod] = useAtom(searchMethodState);
-    const t = useTranslations('content-list');
+    const { t } = useLingui();
 
     // 페이지 ID 목록 추출
     const pageIds = useMemo(() => {

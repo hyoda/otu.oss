@@ -1,5 +1,5 @@
 'use client';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 import {
     currentPageState,
     openConfirmState,
@@ -81,9 +81,7 @@ export const refreshPublicPageCache = async (pageId: string) => {
 };
 
 export const useCreate = () => {
-    const t = useTranslations('editor');
-    const tError = useTranslations('error');
-    const tValidation = useTranslations('validation');
+    const { t } = useLingui();
     const openSnackbar = useSetAtom(openSnackbarState);
     const refreshList = useSetAtom(refreshListState);
     const router = useRouter();
@@ -110,7 +108,7 @@ export const useCreate = () => {
             folder_id?: string | null
         ): Promise<{ data: pageDataType; isPublic: boolean } | undefined> {
             if (isEmpty(title, body)) {
-                openSnackbar({ message: t('please-enter-title-or-content') });
+                openSnackbar({ message: t`제목이나 내용을 입력하세요.` });
                 return;
             }
 
@@ -118,10 +116,7 @@ export const useCreate = () => {
             const titleLength = title.length;
             if (titleLength > MAX_TITLE_LENGTH) {
                 openSnackbar({
-                    message: tValidation('title-length-exceeded', {
-                        maxLength: MAX_TITLE_LENGTH.toLocaleString(),
-                        currentLength: titleLength.toLocaleString(),
-                    }),
+                    message: t`제목이 ${MAX_TITLE_LENGTH.toLocaleString()}자를 초과했습니다. (현재: ${titleLength.toLocaleString()}자)`,
                 });
                 return;
             }
@@ -130,10 +125,7 @@ export const useCreate = () => {
             const bodyLength = body.length;
             if (bodyLength > MAX_BODY_LENGTH) {
                 openSnackbar({
-                    message: tValidation('body-length-exceeded', {
-                        maxLength: MAX_BODY_LENGTH.toLocaleString(),
-                        currentLength: bodyLength.toLocaleString(),
-                    }),
+                    message: t`본문이 ${MAX_BODY_LENGTH.toLocaleString()}자를 초과했습니다. (현재: ${bodyLength.toLocaleString()}자)`,
                 });
                 return;
             }
@@ -142,12 +134,7 @@ export const useCreate = () => {
             const totalLength = titleLength + bodyLength;
             if (totalLength > TARGET_SIZE) {
                 openSnackbar({
-                    message: tValidation('target-size-exceeded', {
-                        maxLength: TARGET_SIZE.toLocaleString(),
-                        titleLength: titleLength.toLocaleString(),
-                        bodyLength: bodyLength.toLocaleString(),
-                        totalLength: totalLength.toLocaleString(),
-                    }),
+                    message: t`제목과 본문의 합계가 ${TARGET_SIZE.toLocaleString()}자를 초과했습니다. (현재: ${totalLength.toLocaleString()}자)`,
                 });
                 return;
             }
@@ -190,13 +177,11 @@ export const useCreate = () => {
                                 error: updateError,
                             });
                             openConfirm({
-                                message: `<div>${t.markup('edit-deleted-page', {
-                                    br: () => '<br />',
-                                })}</div>`,
+                                message: `<div>이 페이지는 다른 곳에서 삭제되었습니다.<br />내용을 새 페이지로 복구하시겠습니까?</div>`,
                                 onYes: async () => {
                                     // localStorage에 백업 저장
                                     try {
-                                        const finalTitle = title === '' ? t('untitled') : title;
+                                        const finalTitle = title === '' ? t`제목 없음` : title;
                                         localStorage.setItem(
                                             'editor_deleted_page_backup',
                                             JSON.stringify({
@@ -215,8 +200,8 @@ export const useCreate = () => {
                                 onNo: () => {
                                     router.push('/');
                                 },
-                                yesLabel: t('restore'),
-                                noLabel: t('ignore'),
+                                yesLabel: t`복구`,
+                                noLabel: t`무시`,
                             });
                         } else {
                             // 예상치 못한 다른 오류 - 콘솔에 로깅
@@ -232,7 +217,7 @@ export const useCreate = () => {
                                     is_public,
                                 },
                             });
-                            openSnackbar({ message: tError('an-error-occurred') });
+                            openSnackbar({ message: t`오류가 발생했습니다` });
                         }
                         return; // 에러 상황이므로 여기서 종료
                     }
@@ -269,7 +254,7 @@ export const useCreate = () => {
                     });
                 } catch (createError) {
                     drawLogger('새 페이지 생성도 실패', { id, error: createError });
-                    openSnackbar({ message: tError('an-error-occurred') });
+                    openSnackbar({ message: t`오류가 발생했습니다` });
                     return;
                 }
             }

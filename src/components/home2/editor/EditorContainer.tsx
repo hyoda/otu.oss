@@ -4,7 +4,8 @@ import { useAtomValue } from 'jotai';
 import { isDarkModeAtom } from '@/lib/jotai';
 import { BlockNoteSchema, defaultBlockSpecs } from '@blocknote/core';
 import { ko, en } from '@blocknote/core/locales';
-import { useLocale, useTranslations } from 'next-intl';
+import { useLocale } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 import { useCreateBlockNote } from '@/components/common/BlockNoteEditor';
 import { BlockNoteWrapper } from '@/components/common/BlockNoteEditor';
 import { editorIndexLogger } from '@/debug/editor';
@@ -22,7 +23,7 @@ interface EditorContainerProps {
 export default function EditorContainer({ pageId, mode, onEditorReady }: EditorContainerProps) {
     const darkMode = useAtomValue(isDarkModeAtom);
     const currentLocale = useLocale();
-    const tEditor = useTranslations('editor');
+    const { t } = useLingui();
 
     // locale 변경 시에만 dictionary와 schema를 재생성하여 오버헤드 최소화
     const { dictionary, schema } = useMemo(() => {
@@ -67,7 +68,7 @@ export default function EditorContainer({ pageId, mode, onEditorReady }: EditorC
     );
 
     if (!editor) {
-        return <div className="p-4 text-center">{tEditor('loading') || 'Loading...'}</div>;
+        return <div className="p-4 text-center">{t`로딩중`}</div>;
     }
 
     return (

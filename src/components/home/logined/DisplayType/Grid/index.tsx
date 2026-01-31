@@ -10,7 +10,7 @@ import {
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { CheckCircleIcon } from '@heroicons/react/24/outline';
 import { useMemo } from 'react';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 import { getDisplayTitle } from '../../page/CreateUpdate/utils/textUtils';
 import { CircleIcon } from '@/components/common/icons/CircleIcon';
 import { FolderTag } from '@/components/common/FolderTag';
@@ -47,7 +47,7 @@ export default function List({
     const [selectionMode, setSelectionMode] = useAtom(selectionModeState);
     const toggleSelection = useSetAtom(toggleItemSelection);
     const selectedItems = useAtomValue(selectedItemsState);
-    const t = useTranslations();
+    const { t } = useLingui();
 
     const breakpointColumnsObj = {
         default: 3,
@@ -94,12 +94,7 @@ export default function List({
 
                 {/* LCP 최적화: 이미지가 있는 첫 번째 아이템에만 priority 적용 */}
                 {contents.map((item, index) => {
-                    const displayTitle = getDisplayTitle(
-                        item.title,
-                        item.body,
-                        1000,
-                        t('common.no-title')
-                    );
+                    const displayTitle = getDisplayTitle(item.title, item.body, 1000, t`제목 없음`);
 
                     // 이미지가 있는 첫 번째 아이템에만 priority 적용
                     const hasImage = item.img_url && isUploadcareUrl(item.img_url);
@@ -154,7 +149,7 @@ export default function List({
                                         onError={(e) => {
                                             // 렌더링을 차단하지 않는 인라인 에러 핸들링
                                             const target = e.currentTarget as HTMLImageElement;
-                                            target.alt = t('images-are-only-visible-online');
+                                            target.alt = t`이미지는 온라인에서만 보여집니다.`;
                                         }}
                                     />
                                     {/* 선택 시 이미지 오버레이 */}

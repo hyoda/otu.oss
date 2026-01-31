@@ -21,14 +21,13 @@ import { ulid } from 'ulid';
 import { chatLogger } from '@/debug/chat';
 import { get } from '@/watermelondb/control/Page';
 import { RAG_SEARCH_MIN_LENGTH_THRESHOLD } from '@/functions/constants';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 
 const welcomeMessages = [''];
 
 let reader: ReadableStreamDefaultReader<Uint8Array>;
 export default function Input({ showScrollButton }: { showScrollButton: boolean }) {
-    const t = useTranslations('chat');
-    const tErrors = useTranslations('api.errors');
+    const { t } = useLingui();
     const [chatSession, setAiSession] = useAtom(chatSessionState);
     const [chatMessages, setChatMessages] = useAtom(chatMessagesState);
     const currentPage = useAtomValue(currentPageState);
@@ -67,7 +66,7 @@ export default function Input({ showScrollButton }: { showScrollButton: boolean 
         const message: MessageItem = {
             id: ulid(),
             type: MessageType.Request,
-            name: t('me'),
+            name: t`나`,
             content: value,
         };
         setChatMessages((draft: MessageItem[]) => {
@@ -200,7 +199,7 @@ export default function Input({ showScrollButton }: { showScrollButton: boolean 
             id: ulid(),
             type: MessageType.SimilarityResponseStart,
             name: 'OTU',
-            content: t('similarity.searching'),
+            content: t`질문과 관련된 자료를 찾고 있어요.`,
         };
     }
 
@@ -209,7 +208,7 @@ export default function Input({ showScrollButton }: { showScrollButton: boolean 
             id: ulid(),
             type: MessageType.SimilarityResponseEndNotFound,
             name: 'OTU',
-            content: t('similarity.not-found'),
+            content: t`요청하신 자료는 찾을 수 없었지만, 알고 있는 내용에 바탕해 답변 드릴게요.`,
         };
     }
     async function runAskLLM({
@@ -244,7 +243,8 @@ export default function Input({ showScrollButton }: { showScrollButton: boolean 
                 if (isUserQuotaExceeded) {
                     // OTU 사용량 한도 초과 - 리셋 날짜 정보 포함
                     const quotaError: any = new Error(
-                        errorData.message || tErrors('user-quota-exceeded-fallback')
+                        errorData.message ||
+                            t`월간 AI 사용량이 초과되었습니다. 다음 달에 다시 시도해주세요.`
                     );
                     quotaError.isQuotaExceeded = true;
                     quotaError.status = 429;
@@ -254,7 +254,8 @@ export default function Input({ showScrollButton }: { showScrollButton: boolean 
                 } else if (isExternalRateLimit) {
                     // 외부 API 한도 초과 - 재시도 안내
                     const rateLimitError: any = new Error(
-                        errorData.message || tErrors('external-rate-limit-fallback')
+                        errorData.message ||
+                            t`일시적으로 요청이 많아 처리할 수 없습니다. 잠시 후 다시 시도해주세요.`
                     );
                     rateLimitError.isExternalRateLimit = true;
                     rateLimitError.status = 429;
@@ -263,7 +264,8 @@ export default function Input({ showScrollButton }: { showScrollButton: boolean 
                 } else {
                     // 하위 호환성: errorCode가 없는 경우 기존 동작 유지
                     const quotaError: any = new Error(
-                        errorData.message || tErrors('user-quota-exceeded-fallback')
+                        errorData.message ||
+                            t`월간 AI 사용량이 초과되었습니다. 다음 달에 다시 시도해주세요.`
                     );
                     quotaError.isQuotaExceeded = true;
                     quotaError.status = 429;
@@ -280,7 +282,9 @@ export default function Input({ showScrollButton }: { showScrollButton: boolean 
                     throw parseError;
                 }
                 // JSON 파싱 실패 시 기본 메시지 사용
-                const quotaError: any = new Error(tErrors('user-quota-exceeded-fallback'));
+                const quotaError: any = new Error(
+                    t`월간 AI 사용량이 초과되었습니다. 다음 달에 다시 시도해주세요.`
+                );
                 quotaError.isQuotaExceeded = true;
                 quotaError.status = 429;
                 throw quotaError;

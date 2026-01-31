@@ -26,7 +26,7 @@ import '@/app/blocknote.css';
 import { useSetAtom } from 'jotai';
 import { openSnackbarState, editorUploaderContextState } from '@/lib/jotai';
 import { useImageDrop } from './hooks/useImageDrop';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 import { en as aiEn } from '@blocknote/xl-ai/locales';
 import { en } from '@blocknote/core/locales';
 import { blocknoteLogger } from '@/debug/blocknote';
@@ -144,8 +144,8 @@ export const BlockNoteWrapper: React.FC<BlockNoteProps> = ({
     const isUnmountingRef = useRef(false);
     const openSnackbar = useSetAtom(openSnackbarState);
     const setEditorContext = useSetAtom(editorUploaderContextState);
-    const tEditor = useTranslations('editor');
-    const { isUploading, handleDrop, handlePaste } = useImageDrop({ editor, pageId, t: tEditor });
+    const { t } = useLingui();
+    const { isUploading, handleDrop, handlePaste } = useImageDrop({ editor, pageId });
 
     // AI 기능 활성화 여부를 메모이제이션하여 성능 최적화
     const isAIEnabled = useMemo(() => {
@@ -363,13 +363,13 @@ export const BlockNoteWrapper: React.FC<BlockNoteProps> = ({
     useEffect(() => {
         if (isUploading) {
             openSnackbar({
-                message: tEditor('uploading-files'),
+                message: t`파일 업로드 중...`,
                 autoHideDuration: null,
                 horizontal: 'left',
                 vertical: 'bottom',
             });
         }
-    }, [isUploading, tEditor, openSnackbar]);
+    }, [isUploading, t, openSnackbar]);
 
     return (
         <div
@@ -400,7 +400,15 @@ export const BlockNoteWrapper: React.FC<BlockNoteProps> = ({
                         triggerCharacter="/"
                         suggestionMenuComponent={CustomSlashMenu}
                         getItems={async (query) => {
-                            const customItems = getCustomSlashMenuItems(editor, tEditor, pageId);
+                            const customItems = getCustomSlashMenuItems(
+                                editor,
+                                {
+                                    mediaGroupTitle: t`미디어`,
+                                    mediaSlashMenuTitle: t`미디어 & 파일`,
+                                    mediaDescription: t`이미지, 동영상, PDF 및 기타 파일 업로드`,
+                                },
+                                pageId
+                            );
                             // AI가 활성화된 경우에만 AI 슬래시 메뉴 아이템 추가
                             const aiItems = isAIEnabled ? getAISlashMenuItems(editor) : [];
 

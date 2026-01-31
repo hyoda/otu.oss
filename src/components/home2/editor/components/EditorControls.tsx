@@ -4,7 +4,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useSetAtom } from 'jotai';
 import { chatOpenState } from '@/lib/jotai';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 import { withButtonMotion } from '@/components/common/withMotionEffects';
 import Ai from '@/public/icon/bottom_nav_ai';
 
@@ -24,7 +24,7 @@ const SaveButtonComponent = ({
     isModified: boolean;
     tEditor: any;
 }) => (
-    <Tooltip arrow title={`${saveShortcutText} - ${tEditor('manual-save')}`}>
+    <Tooltip arrow title={`${saveShortcutText} - ${tEditor`수동 저장`}`}>
         <span>
             <Chip
                 icon={getSaveStatusIcon()}
@@ -65,7 +65,7 @@ const ChatButtonComponent = ({
     setChatOpen: (updater: (prev: boolean) => boolean) => void;
     tNavigation: any;
 }) => (
-    <Tooltip arrow title={tNavigation('chat')}>
+    <Tooltip arrow title={tNavigation`채팅`}>
         <span>
             <Chip
                 icon={<Ai width="16" height="16" className="fill-text-color stroke-text-color" />}
@@ -133,13 +133,12 @@ export function EditorControls({
     title,
 }: EditorControlsProps) {
     const setChatOpen = useSetAtom(chatOpenState);
-    const tEditor = useTranslations('editor');
-    const tNavigation = useTranslations('navigation');
+    const { t } = useLingui();
 
     const getSaveStatusText = () => {
-        if (isAutoSaving) return tEditor('saving');
-        if (isModified) return tEditor('unsaved');
-        return tEditor('saved');
+        if (isAutoSaving) return t`저장 중...`;
+        if (isModified) return t`저장전`;
+        return t`저장됨`;
     };
 
     const getSaveStatusIcon = () => {
@@ -160,7 +159,7 @@ export function EditorControls({
                     getSaveStatusIcon={getSaveStatusIcon}
                     getSaveStatusText={getSaveStatusText}
                     isModified={isModified}
-                    tEditor={tEditor}
+                    tEditor={t}
                 />
             )}
 
@@ -168,7 +167,7 @@ export function EditorControls({
             <ChatButton
                 key={`chat-${showSaveButton ? 'active' : 'inactive'}`}
                 setChatOpen={setChatOpen}
-                tNavigation={tNavigation}
+                tNavigation={t}
             />
         </div>
     );

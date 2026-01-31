@@ -1,7 +1,7 @@
 'use client';
 import FolderGrid from '@/components/home/logined/DisplayType/FolderGrid';
 import { enhancedRenderLogger } from '@/debug/render';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 
 type FolderData = {
     id: string;
@@ -28,7 +28,7 @@ export default function Presentation({
     onCreateFolder,
     error,
 }: PresentationProps) {
-    const t = useTranslations('content-list');
+    const { t } = useLingui();
 
     enhancedRenderLogger('FolderPresentation rendered', {
         foldersLength: folders?.length || 0,
@@ -39,7 +39,7 @@ export default function Presentation({
     if (error) {
         return (
             <div className="flex flex-col items-center justify-center h-32 text-gray-500">
-                <p className="mb-2">{t('error_occurred')}</p>
+                <p className="mb-2">{t`오류가 발생했습니다`}</p>
                 <p className="text-sm text-gray-400">{error.message}</p>
             </div>
         );

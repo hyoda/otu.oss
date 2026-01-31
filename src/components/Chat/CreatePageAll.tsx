@@ -13,14 +13,14 @@ import { useCreate } from '../home/logined/page/CreateUpdate/useCreate';
 import { ulid } from 'ulid';
 import { fetchTitling } from '@/functions/ai';
 import { SavePageIcon } from '@/public/icon/SavePage';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 import { convertMarkdownToHtml } from './CreatePageBtn';
 import Tooltip from '@mui/material/Tooltip';
 import { useNavigate } from 'react-router-dom';
 import { chatLogger } from '@/debug/chat';
 
 export function CreatePageAll() {
-    const t = useTranslations('chat');
+    const { t } = useLingui();
     const [copied, setCopied] = useState(false);
     const { editSubmitHandler } = useCreate();
     const chatMessages = useAtomValue(chatMessagesState);
@@ -143,7 +143,7 @@ export function CreatePageAll() {
     );
 
     return (
-        <Tooltip title={t('save-all-chat')}>
+        <Tooltip title={t`전체 채팅 내용을 페이지로 복사`}>
             <span>
                 <Button
                     startIcon={icon}
@@ -156,7 +156,7 @@ export function CreatePageAll() {
                     }}
                     disabled={copied || chatMessages.length === 0}
                 >
-                    {t('save-page')}
+                    {t`저장`}
                 </Button>
             </span>
         </Tooltip>

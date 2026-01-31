@@ -3,19 +3,19 @@ import { useAtomValue } from 'jotai';
 import React from 'react';
 import { isDarkModeAtom } from '@/lib/jotai';
 import Image from 'next/image';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 
 export function Waiting() {
     const darkMode = useAtomValue(isDarkModeAtom);
-    const t = useTranslations('beta-test');
+    const { t } = useLingui();
 
     return (
         <div className="dark:text-white flex justify-center items-center w-screen h-screen">
             <div>
-                <p>{t('thanks-for-interest')}</p>
-                <p>{t('preparing-welcome')}</p>
-                <p>{t('will-contact-by-email')}</p>
-                <p>{t('thanks-for-waiting')}</p>
+                <p>{t`OTU에 관심을 가져주셔서 감사합니다.`}</p>
+                <p>{t`열심히 손님맞이 준비 중입니다.`}</p>
+                <p>{t`모실 준비가 되면 이메일로 연락드리겠습니다.`}</p>
+                <p>{t`기다려주셔서 감사합니다!`}</p>
                 <p className="flex justify-center mt-4">
                     <Image
                         src={`/waiting/cleaning.${darkMode ? 'dark.' : ''}svg`}

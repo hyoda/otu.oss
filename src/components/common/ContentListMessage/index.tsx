@@ -1,10 +1,8 @@
 import { useAtom } from 'jotai';
 import { contentListMessageState } from '@/lib/jotai';
-import { useTranslations } from 'next-intl';
 
 export default function ContentListMessage() {
     const [contentListMessage, setContentListMessage] = useAtom(contentListMessageState);
-    const tError = useTranslations('error');
 
     if (contentListMessage === '') {
         return null;
@@ -36,9 +34,7 @@ export default function ContentListMessage() {
             >
                 <div
                     dangerouslySetInnerHTML={{
-                        __html: tError('append-to-page', {
-                            title: contentListMessage,
-                        }),
+                        __html: contentListMessage,
                     }}
                 ></div>
             </div>
