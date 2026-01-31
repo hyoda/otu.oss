@@ -75,9 +75,6 @@ export const viewport: Viewport = {
 };
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
     renderLogger('root/layout.tsx');
-    const buildTimestamp = process.env.VERCEL_GIT_COMMIT_SHA
-        ? process.env.VERCEL_GIT_COMMIT_SHA
-        : 'be_happy';
     const locale = await getLocale();
 
     // Providing all messages to the client
@@ -92,7 +89,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                         __html: `!function(){try{var e=null;try{e=localStorage.getItem("themeMode")}catch(t){}if(e)document.documentElement.className=JSON.parse(e);else{var t=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;document.documentElement.className=t?"black":"gray"}}catch(e){document.documentElement.className="gray"}}();`,
                     }}
                 />
-                <link rel="manifest" href={`/manifest.json?seed=${buildTimestamp}`} />
             </head>
             <body>
                 <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>

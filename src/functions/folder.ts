@@ -1,7 +1,6 @@
 import { ulid } from 'ulid';
 import * as FolderControl from '@/watermelondb/control/Folder';
 import * as PageControl from '@/watermelondb/control/Page';
-import { captureException } from '@sentry/nextjs';
 import { triggerSync } from './sync';
 
 // 폴더 타입 정의
@@ -207,7 +206,7 @@ export async function syncFolderInfoSilent(folderId: string): Promise<boolean> {
         const currentFolder = await FolderControl.get(folderId);
         if (!currentFolder) {
             const err = new Error(`Folder with id ${folderId} not found (syncFolderInfoSilent)`);
-            captureException(err);
+            console.error('Folder error:',err);
             throw err;
         }
 
@@ -226,7 +225,7 @@ export async function syncFolderInfoSilent(folderId: string): Promise<boolean> {
             return false;
         }
     } catch (error) {
-        captureException(error);
+        console.error('Folder error:',error);
         throw error;
     }
 }
@@ -284,7 +283,7 @@ export async function addPageToFolder(
         // @ts-ignore
         currentFolderId = currentPage.folder_id;
     } catch (error) {
-        captureException(error);
+        console.error('Folder error:',error);
     }
 
     // 2. 현재 폴더 ID가 삭제된 폴더인지 확인
@@ -345,7 +344,7 @@ export async function addPageToFolder(
         try {
             await Promise.all(foldersToUpdate.map((id) => syncFolderInfoSilent(id)));
         } catch (error) {
-            captureException(error);
+            console.error('Folder error:',error);
         }
     }
 
@@ -399,7 +398,7 @@ export async function addPagesToFolder(pageIds: string[], folderId: string | nul
                     }
                 }
             } catch (error) {
-                captureException(error);
+                console.error('Folder error:',error);
             }
         }
 
@@ -442,7 +441,7 @@ export async function addPagesToFolder(pageIds: string[], folderId: string | nul
                     Array.from(affectedFolderIds).map((id) => syncFolderInfoSilent(id))
                 );
             } catch (error) {
-                captureException(error);
+                console.error('Folder error:',error);
             }
         }
 

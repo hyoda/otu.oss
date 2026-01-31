@@ -8,7 +8,6 @@ import { WebViewCommunicator } from '@/components/core/WebViewCommunicator';
 import { AuthStateChangeAction } from '@/components/core/AuthStateChangeAction';
 import { useCalculateViewportHeight } from '@/functions/hooks/useCalculateViewportHeight';
 import { useRequestStartWebviewToNative } from '@/functions/hooks/useRequestStartWebviewToNative';
-import { useSentrySetUser } from '@/functions/hooks/useSentrySetUser';
 import { renderLogger } from '@/debug/render';
 import useEruda from '@/functions/hooks/useEruda';
 import { RootLayoutProvider } from '@/app/RootLayoutProvider';
@@ -17,7 +16,6 @@ function Layout({ children }: { children: React.ReactNode }) {
     renderLogger('root/(ui)/layout.tsx');
     useCalculateViewportHeight();
     useRequestStartWebviewToNative();
-    useSentrySetUser();
     useEruda();
     return (
         <MuiThemeProvider>

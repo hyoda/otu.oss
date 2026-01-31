@@ -4,7 +4,6 @@ import { ulid } from 'ulid';
 import { getUserLocale } from '@/i18n-server';
 import { sampleLogger } from '@/debug/sample';
 import { getTranslations } from 'next-intl/server';
-import { captureException } from '@sentry/nextjs';
 
 /**
  * 신규 사용자에게 샘플 페이지를 1회 생성합니다.
@@ -67,7 +66,7 @@ export async function seedSamplePageIfNeeded(
 
             // 그 외 오류는 로깅하고 조용히 실패
             sampleLogger('샘플 페이지 생성 실패', { error, userId });
-            captureException(error);
+            console.error('Sample page seed error:', error);
             return;
         }
 

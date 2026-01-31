@@ -3,7 +3,6 @@ import { database } from '..';
 import { createClient } from '@/supabase/utils/client';
 import { syncLogger } from '@/debug/sync';
 import { folderLogger } from '@/debug/folder';
-import { captureException, captureMessage } from '@sentry/nextjs';
 
 export async function get(id: string) {
     const pageCollection = database.get('page');
@@ -278,7 +277,7 @@ export async function verifyByLast() {
                 onlineLatest,
                 offlineLatest,
             });
-            captureMessage(msg);
+            console.log(msg);
             return { isEqual: true, onlineLatest: null, offlineLatest: null };
         }
         // @ts-ignore
@@ -294,7 +293,7 @@ export async function verifyByLast() {
             // @ts-ignore
             (onlineLatest.body?.trim() ?? '') === (offlineLatest?.body?.trim() ?? '');
         if (!isEqual) {
-            captureMessage(
+            console.log(
                 'verifyByLast: 타이틀과 본문이 같지 않습니다. 온라인과 오프라인의 데이터가 다른 것입니다. 서버쪽 데이터를 직접 수정했고, updated_at이 null로 지정 되었을 경우 문제가 된 사례가 있었습니다.',
                 {
                     // @ts-ignore
@@ -308,7 +307,7 @@ export async function verifyByLast() {
         }
         return { isEqual, onlineLatest, offlineLatest };
     } catch (error) {
-        captureException(error);
+        console.error('Page control error:', error);
         console.error(
             'verifyByLast : 마지막 페이지를 조사하는 과정에서 오류가 발생했습니다. :',
             error
@@ -334,7 +333,7 @@ export async function verifyByCount() {
         const isEqual = onlineTotal === offlineTotal;
         return { isEqual, onlineTotal, offlineTotal };
     } catch (error) {
-        captureException(error);
+        console.error('Page control error:', error);
         console.error('Failed to fetch page count:', error);
         throw error;
     }

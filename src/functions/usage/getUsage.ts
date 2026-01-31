@@ -1,14 +1,13 @@
 import { Database } from '@/lib/database/types';
 import { authLogger } from '@/debug/auth';
 import { fetchUserId } from '@/supabase/utils/server';
-import { addBreadcrumb, captureMessage } from '@sentry/nextjs';
 import { SupabaseClient } from '@supabase/supabase-js';
 import dayjs from 'dayjs';
 
 export async function getUsage(
     supabase: SupabaseClient
 ): Promise<Database['public']['Tables']['usage']['Row']> {
-    addBreadcrumb({
+    authLogger('breadcrumb:', {
         category: 'usage',
         message: 'usage 정보를 가져오는 중',
         level: 'fatal',
@@ -20,7 +19,7 @@ export async function getUsage(
         .select('*')
         .eq('user_id', user_id);
 
-    addBreadcrumb({
+    authLogger('breadcrumb:', {
         category: 'usage',
         message: 'usage 정보를 가져옴',
         data: {
@@ -33,7 +32,7 @@ export async function getUsage(
     const usage = usageArray ? usageArray[0] : null;
 
     if (!usage || error) {
-        addBreadcrumb({
+        authLogger('breadcrumb:', {
             category: 'usage',
             message: 'usage 정보를 가져오지 못했습니다',
             data: {

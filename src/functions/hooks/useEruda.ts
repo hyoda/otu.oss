@@ -1,5 +1,4 @@
 // This hook initializes or destroys eruda based on the value of localStorage.OTU_debug.
-import { captureException } from '@sentry/nextjs';
 import { useEffect, useRef } from 'react';
 
 // eruda 타입 선언
@@ -115,7 +114,7 @@ const useEruda = () => {
                         statsMonitor.current.start();
                     } catch (error) {
                         console.error('Failed to load stats.js:', error);
-                        captureException(error);
+                        console.error('Eruda error:',error);
                     }
                 } else {
                     statsMonitor.current.start();
@@ -149,7 +148,7 @@ const useEruda = () => {
                 removeEruda();
             }
         } catch (e) {
-            captureException(e);
+            console.error('Eruda error:',e);
         }
 
         // 컴포넌트 언마운트 시 정리

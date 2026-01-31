@@ -1,5 +1,3 @@
-import * as Sentry from '@sentry/nextjs';
-
 /**
  * 함수별 추적 데이터를 위한 인터페이스
  */
@@ -10,7 +8,7 @@ interface TrackerData {
     callCount: number;
     /** 카운터 리셋을 위한 타이머 ID */
     resetTimeoutId: NodeJS.Timeout | null;
-    /** 이미 Sentry에 보고했는지 여부 (페이지 리로드 전까지) */
+    /** 이미 보고했는지 여부 (페이지 리로드 전까지) */
     hasReported: boolean;
 }
 
@@ -39,12 +37,12 @@ function getTrackerData(key: string): TrackerData {
 }
 
 /**
- * 함수의 연속 호출을 감지하고 임계값을 초과할 경우 Sentry에 보고합니다.
+ * 함수의 연속 호출을 감지하고 임계값을 초과할 경우 콘솔에 경고합니다.
  * 한 번 보고한 후에는 페이지 리로드 전까지 더 이상 보고하지 않습니다.
  *
  * @param functionName - 추적할 함수 이름
  * @param componentName - 함수가 속한 컴포넌트 이름
- * @param extraData - Sentry 보고 시 포함할 추가 데이터 (선택 사항)
+ * @param extraData - 보고 시 포함할 추가 데이터 (선택 사항)
  * @returns 현재까지의 연속 호출 횟수
  *
  * @example
@@ -77,19 +75,14 @@ export function trackFunctionCall(
             clearTimeout(tracker.resetTimeoutId);
         }
 
-        // 임계값 초과 및 아직 보고하지 않은 경우에만 Sentry에 보고
+        // 임계값 초과 및 아직 보고하지 않은 경우에만 콘솔에 경고
         if (tracker.callCount >= CALL_THRESHOLD && !tracker.hasReported) {
-            Sentry.captureMessage(`${functionName} 연속 호출 감지: ${tracker.callCount}회`, {
-                level: 'warning',
-                tags: {
-                    component: componentName,
-                    function: functionName,
-                },
-                extra: {
-                    callCount: tracker.callCount,
-                    trackerKey,
-                    ...extraData,
-                },
+            console.warn(`${functionName} 연속 호출 감지: ${tracker.callCount}회`, {
+                component: componentName,
+                function: functionName,
+                callCount: tracker.callCount,
+                trackerKey,
+                ...extraData,
             });
 
             // 보고 완료 표시 (페이지 리로드 전까지 다시 보고하지 않음)

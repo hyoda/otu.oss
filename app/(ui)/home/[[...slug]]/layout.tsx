@@ -3,13 +3,11 @@
 import { useSync } from '@/functions/hooks/useSync';
 import { useCheckHomeAuth } from '@/components/core/Auth';
 import { useEffect, useState, useRef } from 'react';
-import { captureException } from '@sentry/nextjs';
 import { createClient } from '@/supabase/utils/client';
 import dynamic from 'next/dynamic';
 import { renderLogger } from '@/debug/render';
 import { enhancedRenderLogger } from '@/debug/render';
 import { useLocale } from 'next-intl';
-import useServiceWorkerReload from '@/functions/hooks/useServiceWorkerReload';
 import useCheckWatermelondb from '@/functions/hooks/useCheckWatermelondb';
 import { useDeepLinkWebView } from '@/functions/hooks/useDeepLinkWebView';
 import { syncLogger } from '@/debug/sync';
@@ -69,7 +67,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 dbInitialized.current = true;
                 setIsDbReady(true);
             } catch (error) {
-                captureException(error);
                 console.error('데이터베이스 초기화 오류:', error);
                 // 오류가 발생해도 앱은 계속 진행
                 setIsDbReady(true);
@@ -82,7 +79,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     // 다른 훅들은 데이터베이스 준비 후 실행
     useCheckHomeAuth();
     useSync();
-    useServiceWorkerReload();
 
     // 라우트 진입 시점에서 동기화 트리거 (페이지/폴더/리마인더)
     useEffect(

@@ -1,5 +1,4 @@
 import { ResponseParams } from '@/types';
-import * as Sentry from '@sentry/nextjs';
 import { NextResponse } from 'next/server';
 /**
  * 서버 측 에러 응답을 생성합니다.
@@ -23,8 +22,8 @@ function errorResponse(
     }: ResponseParams,
     error: any
 ): NextResponse {
-    // Sentry로 에러 전송
-    Sentry.captureException(error);
+    // 에러 로깅
+    console.error('API Error:', error);
 
     // 응답 데이터 구성
     const responseData = {

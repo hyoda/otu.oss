@@ -22,7 +22,6 @@ import { sync, SyncResult } from '@/watermelondb/sync';
 import { useAtomValue, useSetAtom } from 'jotai';
 import debounce from 'lodash/debounce';
 import { useCallback, useEffect, useRef } from 'react';
-import * as Sentry from '@sentry/nextjs';
 import { syncLogger } from '@/debug/sync';
 import { createClient } from '@/supabase/utils/client';
 import { clearOnlyWatermelonDB, clearStorage } from '../clearStorage';
@@ -58,14 +57,7 @@ export const useSync = () => {
         syncLogger('checkSessionExpiration start');
         const supabase = createClient();
         const { data, error: sessionError } = await supabase.auth.getSession();
-        Sentry.addBreadcrumb({
-            category: 'sync',
-            message: 'checkSessionExpiration',
-            data: {
-                sessionData: data,
-                sessionError,
-            },
-        });
+        syncLogger('checkSessionExpiration', { sessionData: data, sessionError });
         let user_id = null;
         if (data.session === null) {
             const parseCookies = (cookieString: string) => {
@@ -224,7 +216,7 @@ export const useSync = () => {
             return { isSuccess: true };
         } catch (error) {
             syncLogger('Error during synchronization check', error);
-            Sentry.captureException(error);
+            console.error('Sync check error:', error);
             // 필요한 경우, 강력한 검증을 수행하거나, 실패를 반환할 수 있습니다.
             // @ts-ignore
             return { isSuccess: false, data: { error: error.message } };
@@ -241,11 +233,7 @@ export const useSync = () => {
         // 즉시 락 설정 (다른 호출이 if문을 통과하기 전에)
         isSyncingRef.current = true;
 
-        Sentry.addBreadcrumb({
-            category: 'sync',
-            message: 'sync start (performSync)',
-            level: 'info',
-        });
+        syncLogger('sync start (performSync)');
 
         let result: SyncResult | null = null;
         setSyncing(true);

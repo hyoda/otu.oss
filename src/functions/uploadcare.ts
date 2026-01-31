@@ -1,7 +1,6 @@
 import { ulid } from 'ulid';
 import { captionLogger } from '@/debug/caption';
 import { fetchUserId } from '@/supabase/utils/client';
-import { addBreadcrumb } from '@sentry/nextjs';
 import {
     deleteFiles as uploadcareDeleteFiles,
     UploadcareAuthSchema,

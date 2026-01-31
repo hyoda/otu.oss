@@ -3,7 +3,6 @@ import { backupLogger } from '@/debug/backup';
 import debounce from 'lodash/debounce';
 import { useAtomValue } from 'jotai';
 import { isModifiedState } from '@/lib/jotai';
-import { captureException } from '@sentry/nextjs';
 
 const BACKUP_PREFIX = 'editor_backup_';
 
@@ -64,7 +63,7 @@ export function useEditorBackup(pageId: string | null, initialContent?: EditorCo
                 backupLogger('저장 완료', content);
             } catch (error) {
                 backupLogger('저장 실패:', error);
-                captureException(error);
+                console.error('Editor backup error:',error);
             }
         }, 1000), // 1초 디바운스로 변경 (오케스트레이션은 useEditorOperations에서 처리)
         [getBackupKey, initialContent]
@@ -77,7 +76,7 @@ export function useEditorBackup(pageId: string | null, initialContent?: EditorCo
             return data ? JSON.parse(data) : null;
         } catch (error) {
             backupLogger('불러오기 실패:', error);
-            captureException(error);
+            console.error('Editor backup error:',error);
             return null;
         }
     }, [getBackupKey]);
@@ -89,7 +88,7 @@ export function useEditorBackup(pageId: string | null, initialContent?: EditorCo
             backupLogger('삭제 완료');
         } catch (error) {
             backupLogger('삭제 실패:', error);
-            captureException(error);
+            console.error('Editor backup error:',error);
         }
     }, [getBackupKey]);
 
