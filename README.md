@@ -96,7 +96,7 @@ npm run dev
 
 브라우저에서 [http://localhost:3000](http://localhost:3000)을 열어 애플리케이션을 확인하세요.
 
-> 💡 **팁**: 개발 환경에서는 `/login` 경로에서 이메일 로그인을 사용할 수 있습니다.
+> 💡 **팁**: 개발 환경에서는 `/signin` 경로에서 이메일 로그인을 사용할 수 있습니다.
 
 📖 **상세 설치 가이드**: [docs/installation.md](docs/installation.md) - 환경 변수, 문제 해결 등 자세한 내용
 
