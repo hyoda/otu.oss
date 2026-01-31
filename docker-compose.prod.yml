@@ -234,8 +234,8 @@ services:
             - '8000'
         entrypoint: >
             bash -c "
-            export KONG_DECLARATIVE_CONFIG=/var/lib/kong/kong.yml;
-            envsubst '\$ANON_KEY \$SERVICE_ROLE_KEY' < /var/lib/kong/kong.yml.template > /var/lib/kong/kong.yml;
+            envsubst '\$ANON_KEY \$SERVICE_ROLE_KEY' < /var/lib/kong/kong.yml.template > /tmp/kong.yml;
+            export KONG_DECLARATIVE_CONFIG=/tmp/kong.yml;
             exec /docker-entrypoint.sh kong docker-start
             "
         environment:
