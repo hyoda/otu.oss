@@ -25,7 +25,7 @@ import {
     XMarkIcon,
 } from '@heroicons/react/24/outline';
 import { useAtom, useSetAtom } from 'jotai';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'next/navigation';
 import {
     folderManagementDialogState,
@@ -53,8 +53,7 @@ const DIALOG_BREAKPOINT = 'sm';
 export default function FolderManagementDialog() {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down(DIALOG_BREAKPOINT));
-    const t = useTranslations('folder');
-    const tCommon = useTranslations('common');
+    const { t } = useLingui();
     const router = useRouter();
 
     const [dialogState] = useAtom(folderManagementDialogState);
@@ -122,7 +121,7 @@ export default function FolderManagementDialog() {
         } catch (error) {
             folderLogger('폴더 목록 로드 실패', { error });
             openSnackbar({
-                message: t('load-failed') || '폴더 목록을 불러오는데 실패했습니다.',
+                message: t`폴더 목록을 불러오는데 실패했습니다`,
                 severity: 'error',
             });
         } finally {
@@ -166,7 +165,7 @@ export default function FolderManagementDialog() {
     const handleSubmitNewFolder = useCallback(async () => {
         if (!newFolderName.trim()) {
             openSnackbar({
-                message: t('enter-folder-name') || '폴더명을 입력해주세요.',
+                message: t`폴더명을 입력해주세요`,
                 severity: 'warning',
             });
             return;
@@ -187,7 +186,7 @@ export default function FolderManagementDialog() {
             refreshFolders();
 
             openSnackbar({
-                message: t('folder-created') || '폴더가 생성되었습니다.',
+                message: t`폴더가 생성되었습니다`,
                 severity: 'success',
             });
 
@@ -199,7 +198,7 @@ export default function FolderManagementDialog() {
         } catch (error) {
             folderLogger('폴더 생성 실패', { error });
             openSnackbar({
-                message: t('create-failed') || '폴더 생성에 실패했습니다.',
+                message: t`폴더 생성에 실패했습니다`,
                 severity: 'error',
             });
         } finally {
@@ -212,7 +211,7 @@ export default function FolderManagementDialog() {
         async (folderId: string) => {
             if (!editFolderName.trim()) {
                 openSnackbar({
-                    message: t('enter-folder-name') || '폴더명을 입력해주세요.',
+                    message: t`폴더명을 입력해주세요`,
                     severity: 'warning',
                 });
                 return;
@@ -243,7 +242,7 @@ export default function FolderManagementDialog() {
                 refreshFolders();
 
                 openSnackbar({
-                    message: t('folder-updated') || '폴더가 수정되었습니다.',
+                    message: t`폴더가 수정되었습니다`,
                     severity: 'success',
                 });
 
@@ -251,7 +250,7 @@ export default function FolderManagementDialog() {
             } catch (error) {
                 folderLogger('폴더 수정 실패', { error });
                 openSnackbar({
-                    message: t('update-failed') || '폴더 수정에 실패했습니다.',
+                    message: t`폴더 수정에 실패했습니다`,
                     severity: 'error',
                 });
             }
@@ -280,7 +279,7 @@ export default function FolderManagementDialog() {
                 refreshFolders();
 
                 openSnackbar({
-                    message: t('folder-deleted') || '폴더가 삭제되었습니다.',
+                    message: t`폴더가 삭제되었습니다`,
                     severity: 'success',
                 });
 
@@ -288,7 +287,7 @@ export default function FolderManagementDialog() {
             } catch (error) {
                 folderLogger('폴더 삭제 실패', { error });
                 openSnackbar({
-                    message: t('delete-failed') || '폴더 삭제에 실패했습니다.',
+                    message: t`폴더 삭제에 실패했습니다`,
                     severity: 'error',
                 });
             }
@@ -360,11 +359,10 @@ export default function FolderManagementDialog() {
             } catch (error) {
                 folderLogger('페이지 폴더 토글 실패', { error });
 
-                let errorMessage = t('toggle-failed') || '작업에 실패했습니다.';
+                let errorMessage = t`작업에 실패했습니다`;
                 if (error instanceof Error) {
                     if (error.message.includes('not found')) {
-                        errorMessage =
-                            t('folder-not-found') || '폴더를 찾을 수 없습니다. 다시 시도해주세요.';
+                        errorMessage = t`폴더를 찾을 수 없습니다`;
                     }
                 }
 
@@ -423,11 +421,10 @@ export default function FolderManagementDialog() {
             } catch (error) {
                 folderLogger('페이지 폴더 추가 실패', { error });
 
-                let errorMessage = t('toggle-failed') || '작업에 실패했습니다.';
+                let errorMessage = t`작업에 실패했습니다`;
                 if (error instanceof Error) {
                     if (error.message.includes('not found')) {
-                        errorMessage =
-                            t('folder-not-found') || '폴더를 찾을 수 없습니다. 다시 시도해주세요.';
+                        errorMessage = t`폴더를 찾을 수 없습니다`;
                     }
                 }
 
@@ -506,7 +503,7 @@ export default function FolderManagementDialog() {
                                         height: 48,
                                     }}
                                 >
-                                    {t('create-folder') || '폴더 생성'}
+                                    {t`폴더 생성`}
                                 </Button>
                             </Box>
                         ) : (
@@ -531,7 +528,7 @@ export default function FolderManagementDialog() {
                                             handleCancelCreateFolder();
                                         }
                                     }}
-                                    placeholder={t('folder-name-placeholder')}
+                                    placeholder={t`폴더 이름을 입력하세요`}
                                     size="small"
                                     variant="standard"
                                     autoFocus
@@ -586,10 +583,8 @@ export default function FolderManagementDialog() {
                             }}
                         >
                             {isMultipleMode
-                                ? t('select-folder-instruction-multiple', {
-                                      count: dialogState.multiplePageIds?.length || 0,
-                                  })
-                                : t('select-folder-instruction')}
+                                ? t`선택한 ${dialogState.multiplePageIds?.length || 0}개의 페이지가 소속될 폴더를 선택하세요`
+                                : t`선택한 페이지가 소속될 폴더를 선택하세요`}
                         </Typography>
                     </Box>
 
@@ -630,7 +625,7 @@ export default function FolderManagementDialog() {
                                                     variant="body1"
                                                     sx={{ fontSize: '1rem' }}
                                                 >
-                                                    {t('no-folder') || '지정안함'}
+                                                    {t`지정안함`}
                                                 </Typography>
                                             }
                                         />
@@ -693,7 +688,7 @@ export default function FolderManagementDialog() {
                                                     variant="body1"
                                                     sx={{ fontSize: '1rem' }}
                                                 >
-                                                    {t('no-folder') || '지정안함'}
+                                                    {t`지정안함`}
                                                 </Typography>
                                             }
                                         />
@@ -718,7 +713,7 @@ export default function FolderManagementDialog() {
                                         color="text.secondary"
                                         sx={{ textAlign: 'center' }}
                                     >
-                                        {t('no-folders') || '생성된 폴더가 없습니다.'}
+                                        {t`생성된 폴더가 없습니다`}
                                     </Typography>
                                 </Box>
                             ) : (
@@ -911,7 +906,7 @@ export default function FolderManagementDialog() {
 
             <DialogActions>
                 <Button onClick={handleClose} color="secondary" variant="contained">
-                    {tCommon('close') || '닫기'}
+                    {t`닫기`}
                 </Button>
             </DialogActions>
         </Dialog>

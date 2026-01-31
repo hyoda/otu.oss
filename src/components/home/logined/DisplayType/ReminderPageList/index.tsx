@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 import { useReminderList } from '@/hooks/useReminderList';
 import {
     selectedItemsState,
@@ -29,9 +29,7 @@ import s from './style.module.css';
 import { reminderLogger } from '@/debug/reminder';
 
 export default function ReminderPageList() {
-    const t = useTranslations('alarm');
-    const tPage = useTranslations('page');
-    const tCommon = useTranslations('common');
+    const { t } = useLingui();
 
     const [selectionMode] = useAtom(selectionModeState);
     const toggleSelection = useSetAtom(toggleItemSelection);
@@ -107,7 +105,7 @@ export default function ReminderPageList() {
     const formatPrettyTime = (timestamp: number) => {
         // null, undefined, 0인 경우 모두 처리
         if (!timestamp || timestamp === 0) {
-            return t('no_alarm_set') || '알람 미설정';
+            return t`알람 미설정`;
         }
 
         const date = new Date(timestamp);
@@ -115,12 +113,12 @@ export default function ReminderPageList() {
 
         // 유효하지 않은 날짜인 경우
         if (isNaN(date.getTime())) {
-            return t('no_alarm_set') || '알람 미설정';
+            return t`알람 미설정`;
         }
 
         // 과거 시간인 경우 (대기 중)
         if (date <= now) {
-            return t('alarm_pending') || '알람 대기 중';
+            return t`알람 대기 중`;
         }
 
         // Pretty time 방식으로 상대 시간 표시
@@ -130,14 +128,14 @@ export default function ReminderPageList() {
         const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
         if (diffMinutes < 60) {
-            return t('in_minutes', { count: diffMinutes });
+            return t`${diffMinutes}분 후`;
         } else if (diffHours < 24) {
-            return t('in_hours', { count: diffHours });
+            return t`${diffHours}시간 후`;
         } else if (diffDays < 7) {
-            return t('in_days', { count: diffDays });
+            return t`${diffDays}일 후`;
         } else {
             const diffWeeks = Math.floor(diffDays / 7);
-            return t('in_weeks', { count: diffWeeks });
+            return t`${diffWeeks}주 후`;
         }
     };
 
@@ -162,13 +160,7 @@ export default function ReminderPageList() {
         const hours = String(date.getHours()).padStart(2, '0');
         const minutes = String(date.getMinutes()).padStart(2, '0');
 
-        return t('exact_time_format', {
-            year,
-            month,
-            day,
-            hours,
-            minutes,
-        });
+        return t`${year}년 ${month}월 ${day}일 ${hours}:${minutes}`;
     };
 
     // 제목 표시 처리
@@ -183,7 +175,7 @@ export default function ReminderPageList() {
             return cleanBody.length > 30 ? cleanBody.substring(0, 30) + '...' : cleanBody;
         }
 
-        return tPage('untitled') || '제목 없음';
+        return t`제목 없음`;
     };
 
     useEffect(
@@ -321,7 +313,7 @@ export default function ReminderPageList() {
                                                         </span>
                                                     ) : (
                                                         <span className="text-xs font-medium  py-1 rounded-full inline-block min-w-[60px]">
-                                                            {t('alarm_pending')}
+                                                            {t`알람 대기 중`}
                                                         </span>
                                                     )}
                                                 </div>

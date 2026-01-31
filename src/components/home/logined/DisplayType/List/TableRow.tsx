@@ -4,7 +4,7 @@ import { CheckCircleIcon } from '@heroicons/react/24/outline';
 import { CircleIcon } from '@/components/common/icons/CircleIcon';
 import { getDisplayTitle } from '../../page/CreateUpdate/utils/textUtils';
 import { FolderTag } from '@/components/common/FolderTag';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 import BellIcon from '@/public/icon/BellIcon';
 
 interface TableRowProps {
@@ -31,8 +31,8 @@ const TableRow: React.FC<TableRowProps> = ({
     hideFolderName = false,
     hasAlarm = false,
 }) => {
-    const t = useTranslations();
-    const displayTitle = getDisplayTitle(item.title, item.body, 1000, t('common.no-title'));
+    const { t } = useLingui();
+    const displayTitle = getDisplayTitle(item.title, item.body, 1000, t`제목 없음`);
 
     return (
         <tr

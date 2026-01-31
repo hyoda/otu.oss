@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { chatLogger } from '@/debug/chat';
 import { fetchTitling } from '@/functions/ai';
 import { SavePageIcon } from '@/public/icon/SavePage';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 
@@ -152,7 +152,7 @@ function generateInitialTitle(content: string): string {
 }
 
 export function CreatePageBtn({ content }: { content: string | null }) {
-    const t = useTranslations('chat');
+    const { t } = useLingui();
     const [copied, setCopied] = useState(false);
     const { editSubmitHandler } = useCreate();
     const setCurrentPage = useSetAtom(currentPageState);
@@ -186,7 +186,7 @@ export function CreatePageBtn({ content }: { content: string | null }) {
     };
 
     return (
-        <Tooltip title={t('copy-to-page')}>
+        <Tooltip title={t`채팅 내용을 페이지로 복사`}>
             <IconButton onClick={handleClick} className="scale-[0.7]">
                 {copied ? (
                     <CircularProgress size={18} thickness={8}></CircularProgress>

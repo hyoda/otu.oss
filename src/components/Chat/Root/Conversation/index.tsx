@@ -15,13 +15,13 @@ const { convert } = require('html-to-text');
 import './style.css';
 import CopyAfterIcon from '@/public/icon/copyAfterIcon';
 import CopyBeforeIcon from '@/public/icon/copyBeforeIcon';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 import { CreatePageBtn } from '@/components/Chat/CreatePageBtn';
 
 export function Conversation({ onLeaveBottom }: { onLeaveBottom: (isLeave: boolean) => void }) {
-    const t = useTranslations('chat');
+    const { t } = useLingui();
     const chatSession = useAtomValue(chatSessionState);
     const chatMessages = useAtomValue(chatMessagesState);
     const chatScrollToBottom = useAtomValue(chatScrollToBottomState);
@@ -64,9 +64,7 @@ export function Conversation({ onLeaveBottom }: { onLeaveBottom: (isLeave: boole
         }
     }, [chatScrollToBottom]);
     useEffect(() => {
-        const _noticeText = t.markup('search-hint', {
-            br: () => '<br />',
-        });
+        const _noticeText = '#을 누르면 검색 결과에 대해서 질문할 수 있습니다.<br />';
         setNotice(_noticeText);
     });
 
@@ -193,11 +191,11 @@ function SimilarityStartMessage({
     );
 }
 function SimilarityEndMessage({ id, name, data }: { id: string; name: string; data: any[] }) {
-    const t = useTranslations('chat');
+    const { t } = useLingui();
     return (
         <Root id={id}>
             <Name name={name} justifyContent="start"></Name>
-            {t('found-results')}
+            {t`찾았습니다!`}
             <div>
                 {data.map((item, index) => {
                     return (
@@ -274,7 +272,7 @@ function LLMResponseMessage({
 }
 
 function CopyBtn({ content }: { content: string | null }) {
-    const t = useTranslations('chat');
+    const { t } = useLingui();
     const [copied, setCopied] = useState(false);
 
     const handleClick = () => {
@@ -286,7 +284,7 @@ function CopyBtn({ content }: { content: string | null }) {
     };
     const icon = !copied ? <CopyBeforeIcon></CopyBeforeIcon> : <CopyAfterIcon></CopyAfterIcon>;
     return (
-        <Tooltip title={t('copy-to-clipboard')}>
+        <Tooltip title={t`채팅 내용을 클립보드로 복사`}>
             <IconButton onClick={handleClick} className="scale-75 -ml-[10px] text-color">
                 {icon}
             </IconButton>
@@ -295,7 +293,7 @@ function CopyBtn({ content }: { content: string | null }) {
 }
 
 function ReferenceItem({ title, href, content }: { title: string; href: string; content: string }) {
-    const t = useTranslations('chat');
+    const { t } = useLingui();
     const textLengthLimit = 40;
     const [showFullText, setShowFullText] = useState(false);
     const _content = convert(content);
@@ -321,7 +319,7 @@ function ReferenceItem({ title, href, content }: { title: string; href: string; 
                             className="dark:invert inline mb-[2px]"
                             alt="link"
                         ></Image>
-                        {t('open-original')}
+                        {t`본문열기`}
                     </Link>
                 </div>
             ) : (

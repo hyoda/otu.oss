@@ -13,7 +13,7 @@ import '@/app/blocknote.css';
 import './style.css';
 import { publishLogger } from '@/debug/publish';
 import dynamic from 'next/dynamic';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 
 const APP_URL = process.env.NEXT_PUBLIC_HOST || 'https://otu.ai';
 
@@ -39,7 +39,7 @@ export default function SharePageContent({
 }: SharePageContentProps) {
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const linkButtonRef = useRef<HTMLButtonElement>(null);
-    const t = useTranslations('common');
+    const { t } = useLingui();
 
     publishLogger('SharePageContent: Initializing client component');
 
@@ -155,7 +155,7 @@ export default function SharePageContent({
                                             severity="success"
                                             sx={{ width: 'auto', bgcolor: '#2C2F7E', mt: 1 }}
                                         >
-                                            {t('url-copied')}
+                                            {t`URL이 복사되었습니다!`}
                                         </MuiAlert>
                                     </Popover>
                                 </div>
@@ -189,7 +189,7 @@ export default function SharePageContent({
                                     <div className="w-[50px] h-[50px] rounded-full overflow-hidden">
                                         <img
                                             src={profileImgUrl}
-                                            alt={t('profile-image')}
+                                            alt={t`프로필 이미지`}
                                             width={50}
                                             height={50}
                                             className="w-full h-full object-cover"

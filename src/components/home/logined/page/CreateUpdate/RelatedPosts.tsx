@@ -3,7 +3,7 @@ import React, { memo, useEffect, useRef, useState, useCallback, useMemo } from '
 import { Database } from '@/lib/database/types';
 import { createClient } from '@/supabase/utils/client';
 import RelatedItem from './RelatedItem';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 import { editorViewLogger } from '@/debug/editor';
 
 type RelatedPostsProps = {
@@ -17,14 +17,14 @@ const RelatedPosts = memo(function RelatedPosts({
     currentPageId,
     sperator = true,
 }: RelatedPostsProps) {
-    const t = useTranslations('read');
+    const { t } = useLingui();
     const [isRelatedVisible, setIsRelatedVisible] = useState(false);
     const [filteredRelated, setFilteredRelated] = useState<RAGDocumentType>([]);
     const [hasLoaded, setHasLoaded] = useState(false);
     const relatedRef = useRef<HTMLDivElement | null>(null);
 
     // 번역 텍스트 메모이제이션
-    const relatedContentTitle = useMemo(() => t('related-content-title'), [t]);
+    const relatedContentTitle = useMemo(() => t`관련글`, [t]);
 
     // 관련 콘텐츠 fetch 함수를 메모이제이션
     const fetchRelatedContent = useCallback(async () => {

@@ -4,7 +4,7 @@ import { useAtomValue } from 'jotai';
 import { useEffect } from 'react';
 import { currentPageContentState, currentPageState } from '@/lib/jotai';
 import { editorViewLogger } from '@/debug/editor';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 
 /**
  * 페이지 타입과 콘텐츠 상태에 따라 document.title을 자동으로 업데이트하는 컴포넌트
@@ -15,7 +15,7 @@ import { useTranslations } from 'next-intl';
 export function DocumentTitleUpdater() {
     const currentPageContent = useAtomValue(currentPageContentState);
     const currentPage = useAtomValue(currentPageState);
-    const t = useTranslations('documentTitle');
+    const { t } = useLingui();
 
     useEffect(() => {
         let pageTitle = ''; // 페이지별 타이틀
@@ -32,23 +32,21 @@ export function DocumentTitleUpdater() {
                     pageTitle = '';
                     break;
                 case 'FOLDER_LIST':
-                    pageTitle = t('folderList'); // "폴더 목록" / "Folders"
+                    pageTitle = t`폴더 목록`;
                     break;
                 case 'FOLDER':
                     // 폴더명이 extraData에 있으면 사용
                     if (currentPage.extraData?.folderName) {
-                        pageTitle = t('folderDetail', {
-                            folderName: currentPage.extraData.folderName,
-                        });
+                        pageTitle = `${currentPage.extraData.folderName}`;
                     } else {
-                        pageTitle = t('folderList');
+                        pageTitle = t`폴더 목록`;
                     }
                     break;
                 case 'REMINDER_LIST':
-                    pageTitle = t('reminderList'); // "리마인더 목록" / "Reminders"
+                    pageTitle = t`리마인더 목록`;
                     break;
                 case 'SEARCH':
-                    pageTitle = t('search'); // "검색" / "Search"
+                    pageTitle = t`검색`;
                     break;
                 default:
                     // 다른 타입의 경우 기본값만 사용 (접미사 없음)
@@ -58,7 +56,7 @@ export function DocumentTitleUpdater() {
 
         // APP_TITLE_TEMPLATE 형식 적용: '%s - OTU'
         // pageTitle이 있으면 " - OTU" 접미사 추가, 없으면 기본값 "OTU"만 사용
-        const newTitle = pageTitle ? `${pageTitle} - OTU` : t('default');
+        const newTitle = pageTitle ? `${pageTitle} - OTU` : 'OTU';
 
         // 기존 제목 저장
         const originalTitle = document.title;

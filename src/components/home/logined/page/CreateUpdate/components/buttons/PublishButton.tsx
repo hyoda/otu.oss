@@ -1,7 +1,7 @@
 import React from 'react';
 import { ComputerDesktopIcon } from '@heroicons/react/24/outline';
 import { ButtonBase, ButtonBaseProps } from './ButtonBase';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 
 export interface PublishButtonProps extends Omit<ButtonBaseProps, 'icon' | 'label' | 'title'> {
     isPublished: boolean;
@@ -17,15 +17,15 @@ export const PublishButton: React.FC<PublishButtonProps> = ({
     hideTextOnMobile = false,
     opacity,
 }) => {
-    const t = useTranslations('page');
+    const { t } = useLingui();
 
     return (
         <ButtonBase
             icon={
                 <ComputerDesktopIcon style={{ width: '100%', height: '100%', display: 'block' }} />
             }
-            label={isPublished ? t('published') : t('publish')}
-            title={isPublished ? t('published') : t('publish')}
+            label={isPublished ? t`발행됨` : t`발행하기`}
+            title={isPublished ? t`발행됨` : t`발행하기`}
             onClick={onClick}
             disabled={disabled}
             hideTextOnMobile={hideTextOnMobile}

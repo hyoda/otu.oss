@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import TextArea from '../TextArea';
 import Wrapper from '../wrapper';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 import Search from '@/public/icon/search';
 import { useLocation, useNavigate } from 'react-router-dom';
 export default function Index() {
@@ -60,7 +60,7 @@ export function SearchInput() {
     const { pathname } = useLocation();
     const [value, setValue] = useState('');
     const darkMode = useAtomValue(isDarkModeAtom);
-    const t = useTranslations('editor');
+    const { t } = useLingui();
     const valueRef = useRef(value);
     valueRef.current = value;
     const navigate = useNavigate();
@@ -120,7 +120,7 @@ export function SearchInput() {
                 <TextArea
                     mode="search"
                     value={value}
-                    placeholder={t('search.keyword')}
+                    placeholder={t`검색어`}
                     onChange={changeHandler}
                     onEnter={enterHandler}
                     onBlur={() => {}}

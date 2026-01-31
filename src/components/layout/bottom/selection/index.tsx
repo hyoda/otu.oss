@@ -27,14 +27,13 @@ import {
 } from '@heroicons/react/24/outline';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { NavButton, NavButtonLabel } from '../NavButton';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 import { useLocation, matchPath } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 
 export default function SelectionNavigation() {
-    const t = useTranslations();
-    const tFolder = useTranslations('folder');
+    const { t } = useLingui();
     const location = useLocation();
     const pathname = location.pathname;
     const darkMode = useAtomValue(isDarkModeAtom);
@@ -89,14 +88,14 @@ export default function SelectionNavigation() {
         if (selectedItems.size === 0) return;
 
         const confirmMessage = isFolderList
-            ? tFolder('confirm-delete-multiple', { count: selectedItems.size })
-            : t('editor.confirm-delete-multiple', { count: selectedItems.size });
+            ? t`정말 선택한 ${selectedItems.size}개의 폴더를 삭제하시겠습니까?\n\n폴더가 삭제되면 폴더 안의 페이지들은 폴더 없음 상태로 변경됩니다.`
+            : t`선택된 ${selectedItems.size}개의 페이지를 삭제하시겠습니까?`;
 
         openConfirm({
             message: confirmMessage,
             onNo: () => {},
-            yesLabel: t('read.delete'),
-            noLabel: tFolder('cancel'),
+            yesLabel: t`삭제`,
+            noLabel: t`취소`,
             onYes: async () => {
                 if (selectedItems.size > 0) {
                     try {
@@ -123,9 +122,7 @@ export default function SelectionNavigation() {
                             }, 100);
 
                             openSnackbar({
-                                message: tFolder('folders-deleted-multiple', {
-                                    count: selectedItems.size,
-                                }),
+                                message: t`${selectedItems.size}개의 폴더가 삭제되었습니다.`,
                             });
                         } else {
                             // 페이지 섹션/폴더 상세/리마인더: 선택된 페이지들 삭제
@@ -155,7 +152,7 @@ export default function SelectionNavigation() {
                             for (const itemId of pageIds) {
                                 await remove(itemId);
                             }
-                            openSnackbar({ message: t('read.delete-complete') });
+                            openSnackbar({ message: t`삭제 완료` });
 
                             // 리마인더 섹션이 아닐 때만 sync 실행 (observe가 자동 처리)
                             if (!isInReminderSection) {
@@ -200,8 +197,8 @@ export default function SelectionNavigation() {
                         console.error('삭제 중 오류 발생:', error);
                         openSnackbar({
                             message: isFolderList
-                                ? tFolder('delete-failed')
-                                : t('read.delete-failed'),
+                                ? t`폴더 삭제에 실패했습니다`
+                                : t`삭제에 실패했습니다.`,
                             severity: 'error',
                         });
                     }
@@ -240,15 +237,15 @@ export default function SelectionNavigation() {
         const selectedCount = pageIds.length;
 
         openConfirm({
-            message: tFolder('confirm-remove-pages', { count: selectedCount }),
-            yesLabel: tFolder('remove-from-folder'),
-            noLabel: tFolder('cancel'),
+            message: t`선택된 ${selectedCount}개의 페이지를 현재 폴더에서 제거하시겠습니까? 페이지가 삭제되지는 않습니다.`,
+            yesLabel: t`폴더에서 제외`,
+            noLabel: t`취소`,
             onYes: async () => {
                 try {
                     await removePagesFromFolder(pageIds, currentFolderId);
 
                     openSnackbar({
-                        message: tFolder('pages-removed-from-folder', { count: selectedCount }),
+                        message: t`${selectedCount}개의 페이지가 폴더에서 제거되었습니다`,
                         severity: 'success',
                     });
 
@@ -269,7 +266,7 @@ export default function SelectionNavigation() {
                 } catch (error) {
                     console.error('폴더에서 제거 중 오류 발생:', error);
                     openSnackbar({
-                        message: tFolder('remove-failed'),
+                        message: t`페이지를 폴더에서 제거하는데 실패했습니다`,
                         severity: 'error',
                     });
                 }
@@ -287,19 +284,19 @@ export default function SelectionNavigation() {
         if (!isInReminderSection) return;
 
         const pageIds = Array.from(selectedItems);
-        const confirmMessage = t('alarm.confirm-turn-off-multiple', { count: selectedItems.size });
+        const confirmMessage = t`선택한 ${selectedItems.size}개 페이지의 알림을 끄시겠습니까?`;
 
         openConfirm({
             message: confirmMessage,
-            yesLabel: t('alarm.turn-off'),
-            noLabel: t('common.cancel'),
+            yesLabel: t`알림 끄기`,
+            noLabel: t`취소`,
             onYes: async () => {
                 try {
                     // WatermelonDB에서 직접 알람 삭제
                     const deletedCount = await deleteAlarmsByPageIds(pageIds);
 
                     openSnackbar({
-                        message: t('alarm.turned-off-multiple', { count: deletedCount }),
+                        message: t`${deletedCount}개 페이지의 알림이 꺼졌습니다.`,
                         severity: 'success',
                     });
 
@@ -318,7 +315,7 @@ export default function SelectionNavigation() {
                 } catch (error) {
                     console.error('알림 끄기 중 오류 발생:', error);
                     openSnackbar({
-                        message: t('alarm.turn-off-failed'),
+                        message: t`알림을 끄는데 실패했습니다.`,
                         severity: 'error',
                     });
                 }
@@ -347,7 +344,7 @@ export default function SelectionNavigation() {
                 }}
             >
                 <div className="text-[14px]" style={{ color: 'var(--selection-btn-text)' }}>
-                    {t('selection.items-selected', { count: selectedItems.size })}
+                    {t`${selectedItems.size}개의 항목 선택됨`}
                 </div>
                 <IconButton
                     onClick={resetSelection}
@@ -403,7 +400,7 @@ export default function SelectionNavigation() {
                         }}
                     >
                         <FolderMinusIcon className="w-5 h-5" />
-                        <span>{tFolder('remove-from-folder')}</span>
+                        <span>{t`폴더에서 제외`}</span>
                     </Button>
                 )}
 
@@ -436,7 +433,7 @@ export default function SelectionNavigation() {
                         }}
                     >
                         <FolderOpenIcon className="w-5 h-5" />
-                        <span>{t('folder.add-to-folder')}</span>
+                        <span>{t`폴더 이동`}</span>
                     </Button>
                 )}
 
@@ -469,7 +466,7 @@ export default function SelectionNavigation() {
                         }}
                     >
                         <BellSlashIcon className="w-5 h-5" />
-                        <span>{t('alarm.turn-off')}</span>
+                        <span>{t`알림 끄기`}</span>
                     </Button>
                 )}
 
@@ -500,7 +497,7 @@ export default function SelectionNavigation() {
                     }}
                 >
                     <TrashIcon className="w-5 h-5" />
-                    <span>{t('read.delete')}</span>
+                    <span>{t`삭제`}</span>
                 </Button>
             </div>
         </div>

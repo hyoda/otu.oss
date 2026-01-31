@@ -1,4 +1,4 @@
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 import {
     refreshSeedAfterContentUpdate,
     runSyncIdState,
@@ -30,7 +30,7 @@ import { getCookie } from '../cookie';
 import { redirect } from 'next/navigation';
 
 export const useSync = () => {
-    const t = useTranslations();
+    const { t } = useLingui();
     const refreshList = useSetAtom(refreshListState);
     const setSyncing = useSetAtom(syncingState);
     const runSync = useSetAtom(runSyncState);
@@ -243,12 +243,7 @@ export const useSync = () => {
         try {
             result = await sync(isReset, ({ name, progress, isInitialSync }) => {
                 if (name === 'pull_progress')
-                    setContentListMessage(
-                        t.markup('migration.sync', {
-                            br: () => '<br />',
-                            progress: progress ?? 0,
-                        })
-                    );
+                    setContentListMessage(t`데이터를 동기화하고 있습니다.<br/>${progress ?? 0}`);
                 if (name === 'pull_progress' && isInitialSync) {
                     refreshList({
                         source: 'functions/hooks/useSync:performSync-progress',

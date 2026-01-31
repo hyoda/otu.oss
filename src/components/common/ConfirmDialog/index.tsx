@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useAtom } from 'jotai';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 import { confirmState, closeConfirmState } from '@/lib/jotai'; // 경로는 프로젝트 설정에 맞게 조정하세요.
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -14,7 +14,7 @@ import s from './index.module.css';
 import { Z_INDEX } from '@/constants';
 
 export default function ConfirmDialog() {
-    const t = useTranslations('editor');
+    const { t } = useLingui();
     const [confirm] = useAtom(confirmState);
     const [, closeConfirm] = useAtom(closeConfirmState);
     const contentRef = useRef<HTMLDivElement>(null);
@@ -148,12 +148,12 @@ export default function ConfirmDialog() {
             <DialogActions>
                 {confirm.onNo && (
                     <Button onClick={handleNo} color="secondary" variant="contained" autoFocus>
-                        {confirm.noLabel ? confirm.noLabel : t('cancel')}
+                        {confirm.noLabel ? confirm.noLabel : t`취소`}
                     </Button>
                 )}
                 {confirm.onYes && (
                     <Button onClick={handleYes} color="primary" variant="contained">
-                        {confirm.yesLabel ? confirm.yesLabel : t('confirm')}
+                        {confirm.yesLabel ? confirm.yesLabel : t`확인`}
                     </Button>
                 )}
             </DialogActions>

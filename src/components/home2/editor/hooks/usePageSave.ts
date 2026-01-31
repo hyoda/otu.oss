@@ -4,7 +4,7 @@ import { openConfirmState, openSnackbarState, refreshListState } from '@/lib/jot
 import { remove } from '@/watermelondb/control/Page';
 import { editorIndexLogger } from '@/debug/editor';
 import { createClient } from '@/supabase/utils/client';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 import { useCreate } from '@/components/home/logined/page/CreateUpdate/useCreate';
 import { content, contentType } from '@/types';
 
@@ -23,22 +23,22 @@ export function usePageSave(
     const openConfirm = useSetAtom(openConfirmState);
     const openSnackbar = useSetAtom(openSnackbarState);
     const refreshList = useSetAtom(refreshListState);
-    const t = useTranslations('editor');
+    const { t } = useLingui();
 
     const handleDelete = useCallback(
         (_type: contentType, _id: string) => {
             openConfirm({
-                message: t('confirm-delete'),
+                message: t`정말 삭제하시겠습니까?`,
                 onNo: () => {},
-                yesLabel: t('delete'),
-                noLabel: t('cancel'),
+                yesLabel: t`삭제`,
+                noLabel: t`취소`,
                 onYes: async () => {
                     if (!content?.id) return;
 
                     const pageId = content.id;
 
                     await remove(pageId);
-                    openSnackbar({ message: t('delete-success') });
+                    openSnackbar({ message: t`삭제가 완료되었습니다.` });
 
                     // 외과수술적 업데이트: 삭제된 페이지 ID와 action 전달
                     refreshList({

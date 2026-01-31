@@ -12,7 +12,7 @@ import {
     refreshListState,
 } from '@/lib/jotai';
 import { createClient, fetchUserId } from '@/supabase/utils/client';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 import IconButton from '@mui/material/IconButton';
 import CopyBeforeIcon from '@/public/icon/copyBeforeIcon';
 import BookIcon from '@/public/icon/BookIcon';
@@ -89,7 +89,7 @@ export const usePublishFeatures = (content: content, mode?: 'create' | 'update' 
     const [pendingPublish, setPendingPublish] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
     const [isCheckingStatus, setIsCheckingStatus] = useState(false);
-    const t = useTranslations();
+    const { t } = useLingui();
     const openSnackbar = useSetAtom(openSnackbarState);
     const setProfileDialog = useSetAtom(profileDialogState);
     const setConfirm = useSetAtom(openConfirmState);
@@ -210,7 +210,7 @@ export const usePublishFeatures = (content: content, mode?: 'create' | 'update' 
         // Create a shareable link
         const shareableLink = `${window.location.origin}/share/${content.id}`;
         navigator.clipboard.writeText(shareableLink).then(() => {
-            openSnackbar({ message: t('read.link-copied') });
+            openSnackbar({ message: t`링크가 복사되었습니다.` });
         });
     }, [content.id, openSnackbar, t]);
 
@@ -227,19 +227,19 @@ export const usePublishFeatures = (content: content, mode?: 'create' | 'update' 
                         shareableLink={shareableLink}
                         buttons={[
                             {
-                                label: t('read.copy-link'),
+                                label: t`링크 복사`,
                                 onClick: () => {
                                     navigator.clipboard.writeText(shareableLink).then(() => {
-                                        openSnackbar({ message: t('read.link-copied') });
+                                        openSnackbar({ message: t`링크가 복사되었습니다.` });
                                     });
                                 },
                             },
                             {
-                                label: t('read.open-link'),
+                                label: t`링크 열기`,
                                 href: shareableLink,
                             },
                             {
-                                label: t('read.unpublish'),
+                                label: t`발행 취소`,
                                 onClick: () => {
                                     // 다이얼로그 닫고 발행 취소 처리
                                     closeConfirm();
@@ -253,7 +253,7 @@ export const usePublishFeatures = (content: content, mode?: 'create' | 'update' 
                 ),
                 onYes: false,
                 onNo: () => {},
-                noLabel: t('read.close'),
+                noLabel: t`닫기`,
                 closeOnBackdropClick: true,
             });
         },
@@ -274,9 +274,7 @@ export const usePublishFeatures = (content: content, mode?: 'create' | 'update' 
 
             if (!userId) {
                 publishLogger(`PublishFeatures: 사용자 ID를 찾을 수 없음`);
-                throw new Error(
-                    t('read.user-id-missing') || '사용자 정보가 없습니다. 다시 로그인해주세요.'
-                );
+                throw new Error('사용자 정보가 없습니다. 다시 로그인해주세요.');
             }
 
             // 1. 서버(Supabase)에 is_public 직접 변경 (user_id 명시적 포함)
@@ -292,10 +290,7 @@ export const usePublishFeatures = (content: content, mode?: 'create' | 'update' 
 
             if (error) {
                 publishLogger(`PublishFeatures: 서버 업데이트 실패`, error);
-                throw new Error(
-                    t('read.server-update-failed', { error: error.message }) ||
-                        `서버 업데이트 실패: ${error.message}`
-                );
+                throw new Error(`서버 업데이트 실패: ${error.message}`);
             }
 
             // 2. 캐시 관련 처리 (isPublic 상태와 무관하게 항상 실행)
@@ -392,7 +387,7 @@ export const usePublishFeatures = (content: content, mode?: 'create' | 'update' 
             publishLogger(`PublishFeatures: 공개 상태 변경 오류`, error);
             console.error('공개 상태 변경 오류:', error);
             openSnackbar({
-                message: t('read.status-change-failed') || '상태 변경 중 오류가 발생했습니다',
+                message: t`상태 변경 중 오류가 발생했습니다`,
                 severity: 'error',
             });
             setIsUpdating(false);
@@ -407,7 +402,7 @@ export const usePublishFeatures = (content: content, mode?: 'create' | 'update' 
         if (success) {
             // 성공 다이얼로그 표시
             publishLogger(`PublishFeatures: 페이지 ID ${content.id} 공개 성공 다이얼로그 표시`);
-            showPublishDialog(t('read.publish-success'));
+            showPublishDialog(t`발행되었습니다.`);
         }
     };
 
@@ -418,7 +413,7 @@ export const usePublishFeatures = (content: content, mode?: 'create' | 'update' 
         if (success) {
             // 스낵바로 결과 알림
             publishLogger(`PublishFeatures: 페이지 ID ${content.id} 비공개 처리 성공 알림`);
-            openSnackbar({ message: t('read.unpublish-success') });
+            openSnackbar({ message: t`발행이 취소되었습니다.` });
         }
     };
 
@@ -435,7 +430,7 @@ export const usePublishFeatures = (content: content, mode?: 'create' | 'update' 
         // 이미 발행된 경우, 발행 정보 다이얼로그 표시
         if (isPublic) {
             publishLogger(`PublishFeatures: 이미 공개된 페이지 - 공유 다이얼로그 표시`);
-            showPublishDialog(t('read.currently-sharing'));
+            showPublishDialog(t`현재 공유 중입니다.`);
             return;
         }
 
@@ -447,8 +442,7 @@ export const usePublishFeatures = (content: content, mode?: 'create' | 'update' 
             publishLogger(`PublishFeatures: 사용자 세션을 찾을 수 없음`);
             console.error('사용자 세션을 찾을 수 없습니다');
             openSnackbar({
-                message:
-                    t('read.user-id-missing') || '사용자 정보가 없습니다. 다시 로그인해주세요.',
+                message: t`사용자 정보가 없습니다. 다시 로그인해주세요.`,
             });
             return;
         }
@@ -471,7 +465,7 @@ export const usePublishFeatures = (content: content, mode?: 'create' | 'update' 
             // User has no nickname, show dialog to set up profile
             setPendingPublish(true); // 프로필 설정 후 발행을 위해 대기 상태로 설정
             setConfirm({
-                message: t('read.publish-nickname-required'),
+                message: t`최초 발행시 닉네임과 이미지를 설정해야 합니다.`,
                 onYes: () => {
                     // Open profile settings dialog
                     setSetting((prev) => ({
@@ -483,8 +477,8 @@ export const usePublishFeatures = (content: content, mode?: 'create' | 'update' 
                         open: true,
                     }));
                 },
-                yesLabel: t('read.setup-profile'),
-                noLabel: t('read.cancel'),
+                yesLabel: t`프로필 설정`,
+                noLabel: t`취소`,
                 onNo: () => {
                     // 취소하면 발행 대기 상태도 취소
                     setPendingPublish(false);
@@ -494,13 +488,13 @@ export const usePublishFeatures = (content: content, mode?: 'create' | 'update' 
             publishLogger(`PublishFeatures: 닉네임 있음 - 발행 확인 다이얼로그 표시`);
             // User has nickname, show publish confirmation
             setConfirm({
-                message: t('read.publish-confirmation'),
+                message: t`링크가 있는 모든 사용자가 볼 수 있습니다. 발행하시겠습니까?`,
                 onYes: async () => {
                     await publishContent();
                 },
                 onNo: () => {},
-                noLabel: t('read.cancel'),
-                yesLabel: t('read.publish'),
+                noLabel: t`취소`,
+                yesLabel: t`발행`,
             });
         }
     };
@@ -536,7 +530,7 @@ export const PublishButton = ({
     isUpdating?: boolean;
     isCheckingStatus?: boolean;
 }) => {
-    const t = useTranslations();
+    const { t } = useLingui();
 
     // 로딩/확인 중일 때 애니메이션 적용
     if (isUpdating || isCheckingStatus) {
@@ -545,13 +539,13 @@ export const PublishButton = ({
                 disableRipple
                 className={`!p-0 !opacity-[${opacity}] animate-pulse`}
                 disabled={true}
-                title={isPublished ? t('read.published') : t('read.publish')}
+                title={isPublished ? t`발행됨` : t`발행`}
             >
                 <BookIcon width="14" height="14" className="mr-[2px]" />
                 <span
                     className={`text-[10px] ${hideTextOnMobile ? 'inline-block max-sm:hidden' : 'hide-on-400'}`}
                 >
-                    {isPublished ? t('read.published') : t('read.publish')}
+                    {isPublished ? t`발행됨` : t`발행`}
                 </span>
             </IconButton>
         );
@@ -562,14 +556,14 @@ export const PublishButton = ({
             disableRipple
             className={`!p-0 !opacity-[${opacity}] ${!disabled ? 'hover:!opacity-[1]' : 'cursor-not-allowed'}`}
             onClick={onClick}
-            title={isPublished ? t('read.unpublish') : t('read.publish')}
+            title={isPublished ? t`발행 취소` : t`발행`}
             disabled={disabled}
         >
             <BookIcon width="14" height="14" className="mr-[2px]" />
             <span
                 className={`text-[10px] ${hideTextOnMobile ? 'inline-block max-sm:hidden' : 'hide-on-400'}`}
             >
-                {isPublished ? t('read.published') : t('read.publish')}
+                {isPublished ? t`발행됨` : t`발행`}
             </span>
         </IconButton>
     );

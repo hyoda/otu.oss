@@ -12,7 +12,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useAtom, useSetAtom } from 'jotai';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 import {
     folderCreationDialogState,
     closeFolderCreationDialogState,
@@ -35,8 +35,7 @@ const FOLDER_DESC_MAX_LENGTH = 200;
 export default function FolderCreationDialog() {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down(DIALOG_BREAKPOINT));
-    const t = useTranslations('folder');
-    const tCommon = useTranslations('common');
+    const { t } = useLingui();
 
     const [dialogState] = useAtom(folderCreationDialogState);
     const closeDialog = useSetAtom(closeFolderCreationDialogState);
@@ -52,7 +51,7 @@ export default function FolderCreationDialog() {
     const handleCreateFolder = useCallback(async () => {
         if (!folderName.trim()) {
             openSnackbar({
-                message: t('enter-folder-name') || '폴더명을 입력해주세요.',
+                message: t`폴더명을 입력해주세요`,
                 severity: 'warning',
             });
             return;
@@ -76,7 +75,7 @@ export default function FolderCreationDialog() {
             }
 
             openSnackbar({
-                message: t('folder-created') || '폴더가 생성되었습니다.',
+                message: t`폴더가 생성되었습니다`,
                 severity: 'success',
             });
 
@@ -88,7 +87,7 @@ export default function FolderCreationDialog() {
         } catch (error) {
             folderLogger('폴더 생성 다이얼로그 - 폴더 생성 실패', { error });
             openSnackbar({
-                message: t('create-failed') || '폴더 생성에 실패했습니다.',
+                message: t`폴더 생성에 실패했습니다`,
                 severity: 'error',
             });
         } finally {
@@ -141,7 +140,7 @@ export default function FolderCreationDialog() {
                 >
                     {/* 가운데 텍스트 필드 */}
                     <TextField
-                        placeholder={t('enter-folder-name') || '폴더명을 입력하세요...'}
+                        placeholder={t`폴더명을 입력해주세요`}
                         value={folderName}
                         onChange={(e) => setFolderName(e.target.value)}
                         onKeyDown={handleFolderNameKeyDown}
@@ -178,7 +177,7 @@ export default function FolderCreationDialog() {
                     onClick={handleClose}
                     disabled={isCreating}
                 >
-                    {t('cancel') || '취소'}
+                    {t`취소`}
                 </Button>
                 <Button
                     variant="contained"
@@ -187,7 +186,7 @@ export default function FolderCreationDialog() {
                     disabled={isCreating || !folderName.trim()}
                     startIcon={isCreating ? <CircularProgress size={16} /> : undefined}
                 >
-                    {isCreating ? t('creating') || '생성 중...' : t('create') || '생성'}
+                    {isCreating ? t`생성 중...` : t`생성`}
                 </Button>
             </DialogActions>
         </Dialog>

@@ -5,7 +5,7 @@ import { DocsDialog } from './docs/docDialog';
 import { termsOfService } from './docs/terms-of-service_2024_6_20';
 import { privacyPolicy } from './docs/privacy-policy_2024_6_20';
 import { marketing } from './docs/marketing_2024_6_20';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 
 export type docs = {
     title: string;
@@ -22,7 +22,7 @@ type AgreementFormProps = {
     agreements: agreementType;
 };
 export const AgreementForm = ({ onChange, agreements }: AgreementFormProps) => {
-    const t = useTranslations('agreement-form');
+    const { t } = useLingui();
     const [docInfo, setDocInfo] = useState<docs & { open: boolean }>({
         open: false,
         title: '',
@@ -76,9 +76,9 @@ export const AgreementForm = ({ onChange, agreements }: AgreementFormProps) => {
                             });
                         }}
                     >
-                        {t('terms-of-service')}
+                        {t`약관`}
                     </a>{' '}
-                    {t('required')}
+                    {t`동의 (필수)`}
                 </label>
             </div>
             <div className="mt-1">
@@ -103,9 +103,9 @@ export const AgreementForm = ({ onChange, agreements }: AgreementFormProps) => {
                             });
                         }}
                     >
-                        {t('privacy-policy')}
+                        {t`개인정보 수집 및 이용`}
                     </a>{' '}
-                    {t('required')}
+                    {t`동의 (필수)`}
                 </label>
             </div>
             <div className="mt-1">
@@ -129,9 +129,9 @@ export const AgreementForm = ({ onChange, agreements }: AgreementFormProps) => {
                             });
                         }}
                     >
-                        {t('marketing-consent')}
+                        {t`마케팅 수신`}
                     </a>{' '}
-                    {t('optional')}
+                    {t`동의 (옵션)`}
                 </label>
             </div>
 

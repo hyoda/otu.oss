@@ -10,7 +10,7 @@ import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { forceScroll } from '@/functions/forceRepaint';
 import { useRouter } from 'next/navigation';
 import { GoToBottom } from '../Conversation/GoToBottom';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 
 type TextInputProps = {
     value: string;
@@ -36,7 +36,7 @@ export function View({
     placeholder,
     showScrollButton,
 }: TextInputProps) {
-    const t = useTranslations('chat');
+    const { t } = useLingui();
     const router = useRouter();
     const [isComposing, setIsComposing] = useState(false);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -211,9 +211,9 @@ export function View({
                         displayEmpty
                         inputProps={{ 'aria-label': 'Without label' }}
                     >
-                        <MenuItem value="none">{t('search-scope')}</MenuItem>
-                        <MenuItem value="all">{t('search-all')}</MenuItem>
-                        <MenuItem value="current">{t('search-current')}</MenuItem>
+                        <MenuItem value="none">{t`검색 범위 설정`}</MenuItem>
+                        <MenuItem value="all">{t`전체 글을 검색해서 답변`}</MenuItem>
+                        <MenuItem value="current">{t`페이지의 내용에 대해서 답변`}</MenuItem>
                     </Select>
                 </div>
                 <div className="flex items-end rounded-[22px] p-[6px] bg-color">

@@ -2,17 +2,21 @@ import { BlockNoteEditor } from '@blocknote/core';
 import { DefaultReactSuggestionItem, getDefaultReactSlashMenuItems } from '@blocknote/react';
 import { uploadcareItem } from './uploadcareIntegration';
 
+interface SlashMenuLabels {
+    mediaGroupTitle: string;
+    mediaSlashMenuTitle: string;
+    mediaDescription: string;
+}
+
 // List containing all default Slash Menu Items, as well as our custom one.
 export const getCustomSlashMenuItems = (
     editor: BlockNoteEditor,
-    t: (key: string) => string,
+    labels: SlashMenuLabels,
     pageId: string
 ): DefaultReactSuggestionItem[] => {
     const defaultItems = getDefaultReactSlashMenuItems(editor);
 
-    const mediaGroupTitle = t('slash-menu.group.media');
-    const mediaSlashMenuTitle = t('slash-menu.media');
-    const mediaDescription = t('slash-menu.media-description');
+    const { mediaGroupTitle, mediaSlashMenuTitle, mediaDescription } = labels;
 
     // Media 그룹의 시작 인덱스 찾기
     const mediaGroupStartIndex = defaultItems.findIndex((item) => item.group === mediaGroupTitle);

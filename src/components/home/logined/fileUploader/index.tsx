@@ -21,7 +21,7 @@ import '@uploadcare/react-uploader/core.css';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { useEffect, useLayoutEffect, useRef, useState, memo } from 'react';
 import { create, update } from '@/watermelondb/control/Page';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 import './style.css';
 import { ulid } from 'ulid';
 import { fetchUserId, createClient } from '@/supabase/utils/client';
@@ -190,7 +190,7 @@ export default memo(function FileUploader() {
     const refreshList = useSetAtom(refreshListState);
     const runSync = useSetAtom(runSyncState);
     const openSnackbar = useSetAtom(openSnackbarState);
-    const t = useTranslations('uploader');
+    const { t } = useLingui();
     const [currentPage, setCurrentPage] = useAtom(currentPageState);
     const updateCurrentPageContent = useSetAtom(updateCurrentPageContentState);
     const [pageId, setPageId] = useState<null | string>(null);
@@ -498,7 +498,7 @@ export default memo(function FileUploader() {
             isImage: firstFile.isImage,
         });
 
-        let title = (firstFile.isImage ? t('writing-a-title') : fileName) || t('untitled');
+        let title = (firstFile.isImage ? t`제목 작성 중...` : fileName) || t`제목 없음`;
         uploaderLogger('handleDoneClick - Initial title set', { title });
 
         uploaderLogger('handleDoneClick - Extracting body info');
@@ -570,7 +570,7 @@ export default memo(function FileUploader() {
                             });
 
                             const oldTitle = title;
-                            title = titleResult.result.title || t('writing-a-title');
+                            title = titleResult.result.title || t`제목 작성 중...`;
 
                             const ocr = titleResult.result.ocr || null;
                             let bodyUpdated = false;
@@ -709,9 +709,7 @@ export default memo(function FileUploader() {
                             uploaderLogger('handleDoneClick - Error fetching caption', { error });
                             runSync({});
                             openSnackbar({
-                                message: t(
-                                    'couldnt-generate-a-title-automatically-please-enter-a-title'
-                                ),
+                                message: t`제목을 자동으로 생성할 수 없습니다. 제목을 입력해 주세요.`,
                             });
                         });
                 } else {
@@ -723,7 +721,7 @@ export default memo(function FileUploader() {
                 uploaderLogger('handleDoneClick - Error creating content', { error });
                 console.error('File uploader error:', error);
                 openSnackbar({
-                    message: t('error-creating-content'),
+                    message: t`콘텐츠 생성에 실패했습니다.`,
                 });
             });
 

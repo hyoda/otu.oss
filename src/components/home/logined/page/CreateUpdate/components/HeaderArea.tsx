@@ -23,7 +23,7 @@ import FolderIcon from '@mui/icons-material/Folder';
 import { HeaderAreaDummy, HeaderAreaTemplate } from '../../HeaderAreaTemplate';
 import { editorViewLogger } from '@/debug/editor';
 import Image from 'next/image';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'next/navigation';
 import { DeleteButton, ReadButton } from '../../SharedButtons';
 import {
@@ -69,9 +69,7 @@ export const HeaderArea = memo(function HeaderArea({
 }: HeaderAreaProps) {
     const setCurrentPage = useSetAtom(currentPageState);
     const darkMode = useAtomValue(isDarkModeAtom);
-    const t = useTranslations('editor');
-    const tRead = useTranslations('read');
-    const tFolder = useTranslations('folder');
+    const { t } = useLingui();
     const isModified = useAtomValue(isModifiedState);
     const openConfirm = useSetAtom(openConfirmState);
     const openSnackbar = useSetAtom(openSnackbarState);
@@ -95,24 +93,22 @@ export const HeaderArea = memo(function HeaderArea({
     // 번역 텍스트를 메모이제이션
     const translations = useMemo(
         () => ({
-            loading: t('loading'),
-            title: t('title'),
-            readMode: t('read-mode'),
-            delete: t('delete'),
-            exit: t('exit'),
-            cancel: t('cancel'),
-            unsavedChangesWarning: t.markup('unsaved-changes-warning', {
-                br: () => '<br />',
-            }),
-            // share: tRead('share'),
-            copy: tRead('copy'),
-            reminder: tRead('reminder'),
-            reminderOn: tRead('reminder-on'),
-            reminderOff: tRead('reminder-off'),
-            copied: tRead('copied'),
-            folder: tFolder('manage-folders') || '폴더 관리',
+            loading: t`로딩중`,
+            title: t`제목`,
+            readMode: t`읽기 모드`,
+            delete: t`삭제`,
+            exit: t`나가기`,
+            cancel: t`취소`,
+            unsavedChangesWarning: '저장하지 않은 변경사항이 있습니다.<br />나가시겠습니까?',
+            // share: t`공유`,
+            copy: t`복사`,
+            reminder: t`리마인더`,
+            reminderOn: t`리마인더 시작`,
+            reminderOff: t`리마인더 끄기`,
+            copied: t`복사됨`,
+            folder: t`폴더 관리`,
         }),
-        [t, tRead, tFolder]
+        [t]
     );
 
     // content에서 body 추출 (알림 기능을 위함)

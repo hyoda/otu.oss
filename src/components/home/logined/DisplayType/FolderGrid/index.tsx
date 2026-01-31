@@ -10,7 +10,7 @@ import { CheckCircleIcon, FolderOpenIcon } from '@heroicons/react/24/outline';
 import { getPagesByFolderId, update as updateFolder } from '@/watermelondb/control/Folder';
 import { folderLogger } from '@/debug/folder';
 import s from '../Grid/style.module.css';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 import { CircleIcon } from '@/components/common/icons/CircleIcon';
 import { getThumbnailUrl, isUploadcareUrl } from '@/functions/thumbnail';
 
@@ -42,7 +42,7 @@ export default function FolderGrid({
     const toggleSelection = useSetAtom(toggleItemSelection);
     const selectedItems = useAtomValue(selectedItemsState);
     const [foldersWithThumbnails, setFoldersWithThumbnails] = useState<Folder[]>(folders);
-    const t = useTranslations('folder');
+    const { t } = useLingui();
 
     // 폴더 썸네일 자동 업데이트
     useEffect(
@@ -178,7 +178,7 @@ export default function FolderGrid({
                                         fontWeight: '500',
                                     }}
                                 >
-                                    {t('new-folder')}
+                                    {t`새 폴더`}
                                 </span>
                             </div>
                         </div>
@@ -310,8 +310,7 @@ export default function FolderGrid({
                                             }}
                                         >
                                             {selectionIcon}
-                                            {folder.name}{' '}
-                                            {t('page-count-short', { count: folder.page_count })}
+                                            {folder.name} {t`(${folder.page_count})`}
                                         </div>
                                     </div>
                                 </div>

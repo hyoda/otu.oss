@@ -7,11 +7,10 @@ import { createClient } from '@/supabase/utils/client';
 import { useRouter } from 'next/navigation';
 import { clearStorage } from '@/functions/clearStorage';
 
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 
 export default function Error() {
-    const t = useTranslations('common');
-    const tError = useTranslations('error');
+    const { t } = useLingui();
     const router = useRouter();
     const supabase = createClient();
     const searchParams = useSearchParams();
@@ -61,19 +60,17 @@ export default function Error() {
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen">
-            <h1 className="text-3xl font-bold mb-10">{t('oops')}</h1>
-            <h2 className="text-lg mb-10">
-                {errorParam ? errorParam : tError('an-error-occurred')}
-            </h2>
+            <h1 className="text-3xl font-bold mb-10">{t`앗!`}</h1>
+            <h2 className="text-lg mb-10">{errorParam ? errorParam : t`오류가 발생했습니다.`}</h2>
 
             <div className="flex flex-col gap-2 w-full max-w-[200px]">
                 <Button variant="contained" onClick={handleRetry}>
-                    {tError('retry')}
+                    {t`다시시도`}
                 </Button>
 
                 {isLoggedIn && (
                     <Button variant="contained" onClick={handleLogout}>
-                        {tError('logout')}
+                        {t`로그아웃`}
                     </Button>
                 )}
             </div>

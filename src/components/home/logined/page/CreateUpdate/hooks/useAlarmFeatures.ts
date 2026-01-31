@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSetAtom } from 'jotai';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 import { openSnackbarState, openConfirmState, refreshListState } from '@/lib/jotai';
 import { createClient, fetchUserId } from '@/supabase/utils/client';
 import { alarmLogger } from '@/debug/alarm';
@@ -29,9 +29,7 @@ export function useAlarmFeatures({ title, body, pageId }: UseAlarmFeaturesProps)
     const openConfirm = useSetAtom(openConfirmState);
     // 리마인더 상태 변경 시 글목록 갱신을 위한 트리거
     const refreshList = useSetAtom(refreshListState);
-    const rt = useTranslations('read');
-    const c = useTranslations('common');
-    const at = useTranslations('alarm');
+    const { t } = useLingui();
     const supabase = createClient();
 
     // 초기화 로그를 한 번만 출력하기 위한 ref
@@ -225,11 +223,11 @@ export function useAlarmFeatures({ title, body, pageId }: UseAlarmFeaturesProps)
 
             // 리마인더 활성화 스낵바 표시
             openSnackbar({
-                message: rt('reminder-started'),
+                message: t`리마인더가 시작되었습니다.`,
                 actionBtn: {
-                    label: c('learn-more'),
+                    label: t`자세히 보기`,
                     onClick: () => {
-                        openExternalLink(at('reminder-guide-url'));
+                        openExternalLink('https://otu.ai/share/01K293BXD01DMFZ6DZV5DSZXE6');
                     },
                 },
             });
@@ -432,7 +430,7 @@ export function useAlarmFeatures({ title, body, pageId }: UseAlarmFeaturesProps)
 
         // 리마인더 비활성화 스낵바 표시
         openSnackbar({
-            message: rt('reminder-stopped'),
+            message: t`리마인더가 중지되었습니다.`,
         });
 
         // try-catch 블록 제거 (tryDeleteAlarm이 이미 모든 에러를 처리)

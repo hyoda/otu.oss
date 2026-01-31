@@ -13,7 +13,8 @@ import { useRouter, usePathname } from 'next/navigation';
 import { User } from '@supabase/supabase-js';
 import { createClient, fetchUserId } from '@/supabase/utils/client';
 import { clearStorage } from '@/functions/clearStorage';
-import { useLocale, useTranslations } from 'next-intl';
+import { useLocale } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 import { Database } from '@/lib/database/types';
 import { isReactNativeWebView } from '@/functions/detectEnvironment';
 import { communicateWithAppsWithCallback } from '../core/WebViewCommunicator';
@@ -39,7 +40,7 @@ export function LoginedMenu({ onClose }: LoginedMenuPropsType) {
         Database['public']['Tables']['user_info']['Row'] | null
     >(null);
     const setSetting = useSetAtom(settingState);
-    const t = useTranslations('loggedin-menu');
+    const { t } = useLingui();
     const loginedMenuAnchor = useAtomValue(loginedMenuAnchorState);
     const isOnline = typeof navigator !== 'undefined' && navigator.onLine;
     const [isWebView, setIsWebView] = useState<boolean | null>(true);
@@ -188,10 +189,10 @@ export function LoginedMenu({ onClose }: LoginedMenuPropsType) {
         let extraMessage = '';
         if (provider === 'github') {
             extraMessage =
-                '<p class="text-sm text-gray-500 pt-1">' + t.raw('provider-logout-github') + '</p>';
+                "<p class=\"text-sm text-gray-500 pt-1\">OTU는 로그아웃 되지만, Github는 로그아웃 되지 않습니다. <br /><a href='https://github.com/logout' target='_blank'>GitHub 로그아웃 하기</a></p>";
         } else if (provider === 'google') {
             extraMessage =
-                '<p class="text-sm text-gray-500 pt-1">' + t.raw('provider-logout-google') + '</p>';
+                "<p class=\"text-sm text-gray-500 pt-1\">OTU는 로그아웃 되지만, Google는 로그아웃 되지 않습니다. <a href='https://accounts.google.com/Logout' target='_blank'>Google 로그아웃 하기</a></p>";
         }
         menuLogger(`extraMessage: ${extraMessage}`);
         menuLogger('breadcrumb:', {
@@ -203,7 +204,7 @@ export function LoginedMenu({ onClose }: LoginedMenuPropsType) {
         let logoutFromAllDevices = false;
 
         openConfirm({
-            message: t('are-you-sure-you-want-to-log-out') + extraMessage,
+            message: t`로그아웃하시겠습니까?` + extraMessage,
             onNo: () => {},
             onYes: async () => {
                 // 예상치 못한 로그아웃의 원인을 추적하기 위한 코드
@@ -239,7 +240,7 @@ export function LoginedMenu({ onClose }: LoginedMenuPropsType) {
                 }
 
                 // 스토리지 정리 시도
-                const clearSuccess = await clearStorage(t('clear-storage'));
+                const clearSuccess = await clearStorage(t`로그아웃 버튼을 클릭`);
 
                 if (clearSuccess) {
                     menuLogger('breadcrumb:', {
@@ -259,7 +260,7 @@ export function LoginedMenu({ onClose }: LoginedMenuPropsType) {
                     });
 
                     // 두 번째 시도
-                    const secondAttempt = await clearStorage(t('clear-storage'));
+                    const secondAttempt = await clearStorage(t`로그아웃 버튼을 클릭`);
 
                     if (secondAttempt) {
                         menuLogger('breadcrumb:', {
@@ -282,8 +283,8 @@ export function LoginedMenu({ onClose }: LoginedMenuPropsType) {
                     }
                 }
             },
-            noLabel: t('cancel'),
-            yesLabel: t('confirm'),
+            noLabel: t`취소`,
+            yesLabel: t`확인`,
         });
         onClose();
     };
@@ -386,26 +387,26 @@ export function LoginedMenu({ onClose }: LoginedMenuPropsType) {
 
                 {/* Theme Switcher */}
                 <div className="mb-4">
-                    <div className="text-[15px] mb-3">{t('theme')}</div>
+                    <div className="text-[15px] mb-3">{t`테마`}</div>
                     <div className="flex gap-4 flex-wrap">
                         {[
                             {
                                 key: 'white',
-                                label: t('theme-white'),
+                                label: t`흰색`,
                                 bgColor: 'bg-[var(--white-bg-color)]',
                                 fontColor: 'bg-[var(--white-text-color)]',
                                 borderColor: 'border-[var(--white-border-color)]',
                             },
                             {
                                 key: 'gray',
-                                label: t('theme-gray'),
+                                label: t`회색`,
                                 bgColor: 'bg-[var(--gray-bg-color)]',
                                 fontColor: 'bg-[var(--gray-text-color)]',
                                 borderColor: 'border-transparent',
                             },
                             {
                                 key: 'black',
-                                label: t('theme-black'),
+                                label: t`검정`,
                                 bgColor: 'bg-[var(--black-bg-color)]',
                                 fontColor: 'bg-[var(--black-text-color)]',
                                 borderColor: 'border-transparent',
@@ -445,7 +446,7 @@ export function LoginedMenu({ onClose }: LoginedMenuPropsType) {
                         className="flex items-center justify-between py-2 text-left hover:bg-[var(--focus-bg-color)] rounded-lg px-2 -mx-2 transition-colors"
                     >
                         <div className="flex items-center gap-2">
-                            <span className="text-[15px]">{t('settings')}</span>
+                            <span className="text-[15px]">{t`설정`}</span>
                         </div>
                     </button>
 
@@ -453,7 +454,7 @@ export function LoginedMenu({ onClose }: LoginedMenuPropsType) {
                         onClick={handleLogout}
                         className="flex items-center justify-between py-2 text-left hover:bg-[var(--focus-bg-color)] rounded-lg px-2 -mx-2 transition-colors"
                     >
-                        <span className="text-[15px]">{t('logout')}</span>
+                        <span className="text-[15px]">{t`로그아웃`}</span>
                     </button>
                 </div>
             </div>

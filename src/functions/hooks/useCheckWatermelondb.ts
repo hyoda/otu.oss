@@ -1,7 +1,7 @@
 import { openConfirmState } from '@/lib/jotai';
 import { useSetAtom } from 'jotai';
 import { useEffect } from 'react';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 
 interface ConfirmOptions {
     message: string;
@@ -10,7 +10,7 @@ interface ConfirmOptions {
 
 export default function useCheckWatermelondb() {
     const openConfirm = useSetAtom(openConfirmState);
-    const _t = useTranslations('notice');
+    const { t } = useLingui();
     const testIndexedDBInstallation = (): Promise<boolean> => {
         return new Promise((resolve) => {
             const testDBName = 'test-indexeddb';
@@ -38,8 +38,8 @@ export default function useCheckWatermelondb() {
                     deleteRequest.onerror = (event) => {
                         console.warn('IndexedDB 테스트 DB 삭제 오류:', event);
                         openConfirm({
-                            message: _t('testDeletionError'),
-                            yesLabel: _t('confirm'),
+                            message: t`디바이스가 앱의 일부 기능을 지원하지 않고 있습니다. 다른 장치를 사용해주세요.`,
+                            yesLabel: t`확인`,
                         } as ConfirmOptions);
                         Sentry.captureMessage('IndexedDB 테스트 DB 삭제 실패');
                         resolve(false);
@@ -58,8 +58,8 @@ export default function useCheckWatermelondb() {
 
             request.onerror = () => {
                 openConfirm({
-                    message: _t('testCreationError'),
-                    yesLabel: _t('confirm'),
+                    message: t`IndexedDB 테스트 데이터베이스 생성 중 문제가 발생했습니다. 브라우저나 기기 설정을 확인해주세요.`,
+                    yesLabel: t`확인`,
                 } as ConfirmOptions);
                 Sentry.captureMessage('IndexedDB 테스트 DB 생성 실패');
                 resolve(false);
@@ -70,8 +70,8 @@ export default function useCheckWatermelondb() {
     const checkIndexedDBSupport = async (): Promise<boolean> => {
         if (!window.indexedDB) {
             openConfirm({
-                message: _t('unsupportedBrowser'),
-                yesLabel: _t('confirm'),
+                message: t`앱 사용을 위해 브라우저 업데이트가 필요합니다. 최신 버전으로 변경해 주시면 모든 기능을 원활하게 이용하실 수 있습니다.`,
+                yesLabel: t`확인`,
             } as ConfirmOptions);
             Sentry.captureMessage('IndexedDB 테스트 DB 생성에 실패');
             return false;
@@ -88,8 +88,8 @@ export default function useCheckWatermelondb() {
                     const { quota, usage } = await navigator.storage.estimate();
                     if (quota !== undefined && quota < 5 * 1024 * 1024) {
                         openConfirm({
-                            message: _t('insufficientStorage'),
-                            yesLabel: _t('confirm'),
+                            message: t`디바이스의 저장 공간이 부족하여 IndexedDB 기능에 문제가 발생할 수 있습니다. 필요하지 않은 파일을 삭제하거나 기기를 업그레이드해 주세요.`,
+                            yesLabel: t`확인`,
                         } as ConfirmOptions);
                         return false;
                     }
@@ -103,8 +103,8 @@ export default function useCheckWatermelondb() {
             }
         } catch (error) {
             openConfirm({
-                message: _t('storageError'),
-                yesLabel: _t('confirm'),
+                message: t`저장 공간 확인 중 오류가 발생했습니다. 기기 설정을 확인해주세요.`,
+                yesLabel: t`확인`,
             } as ConfirmOptions);
             console.error('WatermelonDB check error:', error);
             return false;

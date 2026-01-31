@@ -2,12 +2,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useLingui } from '@lingui/react/macro';
 import Loading from '../(ui)/loading';
 import '@/app/globals.css';
 
 export default function LoginCallbackPage() {
-    const t = useTranslations('auth');
+    const { t } = useLingui();
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -22,7 +22,9 @@ export default function LoginCallbackPage() {
         } else {
             // code가 없는 경우 (오류)
             const errorDescription = params.get('error_description') || 'Authentication failed';
-            setError(t('callback-error'));
+            setError(
+                t`인증 처리 중 오류가 발생했습니다. 불편을 드려 죄송합니다. 앱으로 돌아가 다시 시도해 주세요.`
+            );
 
             // 1. 오류를 콘솔에 로깅합니다.
             console.error('Login callback error:', errorDescription);
