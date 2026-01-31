@@ -258,6 +258,12 @@ services:
         # 포트는 Caddy를 통해서만 외부 접근 (직접 노출하지 않음)
         expose:
             - '8000'
+        entrypoint: >
+            bash -c "
+            export KONG_DECLARATIVE_CONFIG=/var/lib/kong/kong.yml;
+            envsubst '\$ANON_KEY \$SERVICE_ROLE_KEY' < /var/lib/kong/kong.yml.template > /var/lib/kong/kong.yml;
+            exec /docker-entrypoint.sh kong docker-start
+            "
         environment:
             KONG_DATABASE: 'off'
             KONG_DECLARATIVE_CONFIG: /var/lib/kong/kong.yml
@@ -268,7 +274,7 @@ services:
             ANON_KEY: ${ANON_KEY}
             SERVICE_ROLE_KEY: ${SERVICE_ROLE_KEY}
         volumes:
-            - ./docker/kong/kong.yml:/var/lib/kong/kong.yml:ro
+            - ./docker/kong/kong.yml:/var/lib/kong/kong.yml.template:ro
         networks:
             - otu-network
         restart: unless-stopped

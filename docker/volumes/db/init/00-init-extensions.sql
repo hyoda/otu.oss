@@ -13,3 +13,6 @@ DO $$ BEGIN
 EXCEPTION WHEN OTHERS THEN
     RAISE NOTICE 'pgroonga extension not available — skipping';
 END $$;
+
+-- Realtime 서비스용 스키마
+CREATE SCHEMA IF NOT EXISTS _realtime;
