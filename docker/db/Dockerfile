@@ -14,5 +14,8 @@ RUN apt-get update && \
     rm -f /tmp/groonga.deb && \
     rm -rf /var/lib/apt/lists/*
 
-# OTU 확장 초기화 스크립트 (Supabase 기본 init-scripts 이후 실행)
+# OTU 초기화 스크립트 (Supabase migrate.sh 이후 실행)
+# init-scripts/*.sql 은 migrate.sh가 처리, 루트 .sh는 docker-entrypoint가 직접 실행
 COPY init-extensions.sql /docker-entrypoint-initdb.d/init-scripts/99-otu-extensions.sql
+COPY init-roles.sh /docker-entrypoint-initdb.d/zz-otu-roles.sh
+RUN chmod +x /docker-entrypoint-initdb.d/zz-otu-roles.sh
