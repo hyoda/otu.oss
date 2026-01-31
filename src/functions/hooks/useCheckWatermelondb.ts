@@ -1,7 +1,6 @@
 import { openConfirmState } from '@/lib/jotai';
 import { useSetAtom } from 'jotai';
 import { useEffect } from 'react';
-import * as Sentry from '@sentry/browser';
 import { useTranslations } from 'next-intl';
 
 interface ConfirmOptions {
@@ -107,7 +106,7 @@ export default function useCheckWatermelondb() {
                 message: _t('storageError'),
                 yesLabel: _t('confirm'),
             } as ConfirmOptions);
-            Sentry.captureException(error);
+            console.error('WatermelonDB check error:',error);
             return false;
         }
 

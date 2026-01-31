@@ -219,24 +219,17 @@ export const useCreate = () => {
                                 noLabel: t('ignore'),
                             });
                         } else {
-                            // 예상치 못한 다른 오류 - Sentry로 전송
+                            // 예상치 못한 다른 오류 - 콘솔에 로깅
                             drawLogger('기존 페이지 업데이트 실패 - 예상치 못한 오류', {
                                 id,
                                 error: updateError,
                             });
-                            const { captureException } = await import('@sentry/nextjs');
-                            captureException(updateError, {
-                                tags: {
-                                    operation: 'page_update',
-                                    page_id: id,
-                                },
-                                extra: {
-                                    pageData: {
-                                        id,
-                                        title: title.substring(0, 100), // 제목 일부만 전송
-                                        bodyLength: body.length,
-                                        is_public,
-                                    },
+                            console.error('Page update error:', updateError, {
+                                pageData: {
+                                    id,
+                                    title: title.substring(0, 100),
+                                    bodyLength: body.length,
+                                    is_public,
                                 },
                             });
                             openSnackbar({ message: tError('an-error-occurred') });

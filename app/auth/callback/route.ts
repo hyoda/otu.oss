@@ -1,6 +1,5 @@
 import { cookies, headers } from 'next/headers';
 import { NextResponse } from 'next/server';
-import * as Sentry from '@sentry/node';
 import { addBetaTester } from '@/functions/hooks/addBetaTester';
 import { authLogger } from '@/debug/auth';
 import { createClient } from '@/supabase/utils/server';
@@ -41,7 +40,7 @@ export async function GET(request: Request) {
             authLogger('소셜 로그인 코드 교환', 'code:', maskedCode, 'result:', result);
         }
     } catch (error) {
-        Sentry.captureException(error);
+        console.error('Auth callback error:', error);
     }
     const { data: userData } = await supabase.auth.getUser();
     authLogger('사용자 정보', userData);
